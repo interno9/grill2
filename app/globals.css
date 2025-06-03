@@ -1,26 +1,101 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*::selection {
+  background-color: unset;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+canvas {
+  opacity: 0;
+  animation: fade-in 0.5s ease-in-out forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.leaflet-bottom,
+.leaflet-popup-close-button,
+.leaflet-control-zoom,
+.leaflet-popup-tip {
+  display: none !important;
+}
+
+/* offset popup */
+.leaflet-popup {
+  margin-bottom: 35px !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+nav {
+  /* backdrop-filter: blur(12px) !important; */
+  background: rgb(255, 255, 255) !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  box-shadow: none !important;
+}
+
+.leaflet-marker-icon {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.leaflet-marker-icon:hover {
+  cursor: pointer;
+  opacity: 0.5 !important;
+}
+
+nav * {
+  transition: all 0.5s ease-in-out !important;
+  padding: 0.2em 0.5em;
+  border-radius: 3em;
+}
+nav *:hover {
+  background-color: red;
+  color: white;
+}
+
+.leaflet-popup-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.swiper-pagination-bullet {
+  background: #ffffff53 !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: red !important;
+  opacity: 1 !important;
+}
+
+.mySwiper {
+  border-radius: 12px;
+}
+
+/* hide scrollbar  */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
 }
