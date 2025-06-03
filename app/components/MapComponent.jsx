@@ -1,4 +1,3 @@
-"use client";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
@@ -6,6 +5,17 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { useState } from "react";
 import { Moon, Sun, Globe, Layers } from "lucide-react";
 import MarkerComponent from "./MarkerComponent";
+import { useEffect } from "react";
+import { useMap } from "react-leaflet";
+function ChangeView({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center) {
+      map.setView(center, zoom);
+    }
+  }, [center, zoom, map]);
+  return null;
+}
 
 const MapApp = ({ projects, locationActive, setLocationActive }) => {
   const zoom = 15;
@@ -30,9 +40,8 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
     <div>
       <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-6 p-2 shadow-md font-bold text-sm rounded-full">
         <select
-          onChange={(e) => {
-            handleLocationChange(e.target.value);
-          }}
+          onChange={(e) => handleLocationChange(e.target.value)}
+          defaultValue="lugano"
         >
           <option value="lugano">Lugano</option>
           <option value="bellinzona">Bellinzona</option>
@@ -42,7 +51,7 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
 
         <select
           onChange={(e) => {
-            handleLocationChange(e.target.value);
+            console.log(e.target.value);
           }}
         >
           <option value="kebab">Kebab</option>
@@ -60,36 +69,24 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
           <option value="asian">Asian</option>
           <option value="veg">Veg</option>
         </select>
-
-        {/* <button onClick={() => setSatelliteMode((prev) => !prev)}>
-          <Globe size={32} />
-        </button>
-        <button
-          onClick={() => {
-            setDarkMode((prev) => !prev);
-            setSatelliteMode(false);
-          }}
-        >
-          {darkMode ? <Moon size={32} /> : <Sun size={32} />}
-        </button> */}
-        {/* <button onClick={() => setNoLabels(!noLabels)}>
-          <Layers size={32} />
-        </button> */}
       </nav>
 
       <MapContainer
-        className="absolute w-full md:w-[calc(100vw-300px)]  top-0 right-0 h-[calc(100vh-207px)] md:h-full z-0"
+        className="absolute w-full md:w-[calc(100vw-300px)] top-0 right-0 h-[calc(100vh-207px)] md:h-full z-0"
         center={startCoordinates}
         zoom={zoom}
         scrollWheelZoom={true}
       >
+        {/* this component kicks in on every `startCoordinates` change */}
+        <ChangeView center={startCoordinates} zoom={zoom} />
+
         {!satelliteMode && (
           <TileLayer
             attribution='© <a href="https://carto.com/">CartoDB</a>'
             url={`https://{s}.basemaps.cartocdn.com/${
               darkMode
                 ? noLabels
-                  ? "dark_all"
+                  ? "dark_nolabels"
                   : "dark_all"
                 : noLabels
                   ? "rastertiles/voyager_nolabels"

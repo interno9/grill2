@@ -45,6 +45,9 @@ export default function Page() {
     []
   );
 
+  // TODO
+  // centering
+
   return (
     <div className="flex w-full h-[100dvh] relative">
       <Map
