@@ -27,6 +27,9 @@ export default function Swiperino({ imgs, videos, slidesPerView }) {
               <video
                 className="w-full object-cover aspect-square"
                 autoPlay
+                controls={false}
+                playsInline
+                disablePictureInPicture
                 muted
                 loop
                 src={video}

@@ -38,7 +38,7 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
 
   return (
     <div>
-      <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-6 p-2 shadow-md font-bold text-sm rounded-full">
+      <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-3 p-1 shadow-md font-bold text-sm rounded-full">
         <select
           onChange={(e) => handleLocationChange(e.target.value)}
           defaultValue="lugano"
