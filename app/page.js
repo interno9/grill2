@@ -61,7 +61,7 @@ export default function Page() {
 
       <div
         onClick={() => setShowBar(!showBar)}
-        className="z-20 fixed right-1/2 translate-x-1/2 p-2 bg-white rounded-t-3xl md:hidden transition-all duration-300 ease-in-out cursor-pointer "
+        className="z-20 fixed right-1/2 translate-x-1/2 p-2 bg-white rounded-t-3xl md:hidden transition-all duration-150 ease-in-out cursor-pointer "
         style={{
           bottom: showBar ? "205px" : "0px",
         }}

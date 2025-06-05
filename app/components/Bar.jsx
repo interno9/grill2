@@ -16,7 +16,7 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
         key={projectId}
         onClick={() => setLocationActive(projectId)}
         className={`
-        flex-shrink-0  w-40 md:w-full rounded-2xl hover:bg-red-500 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-200
+        flex-shrink-0  w-40 md:w-full rounded-2xl hover:bg-red-500 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-150
         ${locationActive === projectId ? "bg-red-400 text-white" : "bg-transparent"}
         `}
       >

@@ -66,7 +66,7 @@ const MarkerComponent = ({
         icon={normalIcon}
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
-        className="hover:scale-110 transition-transform duration-200 ease-in-out"
+        className="hover:scale-110 transition-transform duration-150 ease-in-out"
       >
         <Popup>
           <div className="w-[220px] p-3 shadow-md rounded-2xl">
