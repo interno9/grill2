@@ -70,7 +70,7 @@ export default function Page() {
       </div>
 
       <div
-        className={`z-20 gap-3 shadow-md p-3 fixed bottom-0 md:left-0 md:relative bg-white flex md:flex-col md:w-[300px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${showBar ? "" : "hidden"}`}
+        className={`z-20 gap-3 shadow-md p-3 fixed bottom-0 md:left-0 md:relative bg-white flex md:flex-col md:w-[300px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${showBar ? "" : "hidden md:flex"}`}
       >
         <Bar
           projects={projects}
