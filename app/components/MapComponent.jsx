@@ -2,11 +2,10 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { useState } from "react";
-import { Moon, Sun, Globe, Layers } from "lucide-react";
-import MarkerComponent from "./MarkerComponent";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useMap } from "react-leaflet";
+import MarkerComponent from "./MarkerComponent";
+
 function ChangeView({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
@@ -17,7 +16,20 @@ function ChangeView({ center, zoom }) {
   return null;
 }
 
-const MapApp = ({ projects, locationActive, setLocationActive }) => {
+function ResizeMap({ showBar }) {
+  const map = useMap();
+  useEffect(() => {
+    // Delay to ensure DOM updates before invalidating size
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+      console.log("Map invalidated, showBar:", showBar);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [showBar, map]);
+  return null;
+}
+
+const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
   const zoom = 15;
 
   const positions = {
@@ -37,8 +49,13 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
   };
 
   return (
-    <div>
-      <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-3 p-1 shadow-md font-bold text-sm rounded-full">
+    <div
+      style={{
+        height: showBar ? "calc(100vh - 207px)" : "100vh",
+      }}
+      className="transition-all duration-300 ease-in-out w-full fixed"
+    >
+      <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-3 p-3 shadow-md font-bold text-sm rounded-full">
         <select
           onChange={(e) => handleLocationChange(e.target.value)}
           defaultValue="lugano"
@@ -51,7 +68,7 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
 
         <select
           onChange={(e) => {
-            console.log(e.target.value);
+            console.log("Filter selected:", e.target.value);
           }}
         >
           <option value="kebab">Kebab</option>
@@ -72,13 +89,17 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
       </nav>
 
       <MapContainer
-        className="absolute w-full md:w-[calc(100vw-300px)] top-0 right-0 h-[calc(100vh-207px)] md:h-full z-0"
+        className="absolute w-full md:w-[calc(100vw-300px)] top-0 right-0 z-0"
+        style={{
+          height: "100%",
+          zIndex: 0,
+        }}
         center={startCoordinates}
         zoom={zoom}
         scrollWheelZoom={true}
       >
-        {/* this component kicks in on every `startCoordinates` change */}
         <ChangeView center={startCoordinates} zoom={zoom} />
+        <ResizeMap showBar={showBar} />
 
         {!satelliteMode && (
           <TileLayer
@@ -99,7 +120,7 @@ const MapApp = ({ projects, locationActive, setLocationActive }) => {
           <TileLayer
             className="saturate-[0.7] brightness-[0.9]"
             attribution='© <a href="https://www.esri.com/">Esri</a>'
-            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_imagery/MapServer/tile/{z}/{y}/{x}"
           />
         )}
 

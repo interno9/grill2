@@ -27,11 +27,11 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
         />
         <div className="px-2 py-1 mb-1">
           <h1 className="md:text-lg font-semibold">{project.title}</h1>
-          <p className="truncate">
-            {/* {project.description */}
+          {/* <p className="truncate">
+         
             {project.description ||
               "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}
-          </p>
+          </p> */}
         </div>
       </button>
     );
