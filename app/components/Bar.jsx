@@ -15,8 +15,7 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
         id={`${projectId}`}
         key={projectId}
         onClick={() => setLocationActive(projectId)}
-        className={`
-        flex-shrink-0  w-40 md:w-full rounded-2xl hover:bg-red-400 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-150
+        className={`flex-shrink-0 w-32 md:w-full rounded-2xl hover:bg-red-400 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-150
         ${locationActive === projectId ? "!bg-red-500 text-white" : "bg-transparent"}
         `}
       >
@@ -25,14 +24,15 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
           alt={project.title}
           className="w-full aspect-square rounded-2xl object-cover"
         />
-        <div className="px-2 py-1 mb-1">
-          <h1 className="font-semibold text-center">{project.title}</h1>
-          {/* <p className="truncate">
+
+        <h1 className="font-semibold text-center p-0.5 text-[10px] md:text-sm">
+          {project.title}
+        </h1>
+        {/* <p className="truncate">
          
             {project.description ||
               "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}
           </p> */}
-        </div>
       </button>
     );
   });

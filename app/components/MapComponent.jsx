@@ -22,7 +22,6 @@ function ResizeMap({ showBar }) {
     // Delay to ensure DOM updates before invalidating size
     const timer = setTimeout(() => {
       map.invalidateSize();
-      console.log("Map invalidated, showBar:", showBar);
     }, 200);
     return () => clearTimeout(timer);
   }, [showBar, map]);
@@ -50,7 +49,7 @@ const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
 
   return (
     <div
-      className={`transition-all duration-150 ease-in-out w-full fixed ${showBar ? "h-[calc(100dvh-207px)] md:h-[100dvh]" : "h-[100dvh]"}`}
+      className={`transition-all duration-150 ease-in-out w-full fixed ${showBar ? "h-[calc(100dvh-165px)] md:h-[100dvh]" : "h-[100dvh]"}`}
     >
       <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-3 p-3 shadow-md font-bold text-sm rounded-full">
         <select
