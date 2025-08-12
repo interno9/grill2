@@ -71,7 +71,9 @@ const MarkerComponent = ({
         <Popup>
           <div className="w-[220px] p-3 shadow-md rounded-2xl">
             <Swiperino imgs={project.imageUrls} videos={project.videosUrls} />
-            <h1 className="font-bold md:text-xl my-1">{project.title}</h1>
+            <h1 className="font-bold md:text-xl my-1 text-center">
+              {project.title}
+            </h1>
             <div className="text-xs">
               {project.description ||
                 "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}

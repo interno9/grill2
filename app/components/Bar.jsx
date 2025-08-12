@@ -16,8 +16,8 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
         key={projectId}
         onClick={() => setLocationActive(projectId)}
         className={`
-        flex-shrink-0  w-40 md:w-full rounded-2xl hover:bg-red-500 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-150
-        ${locationActive === projectId ? "bg-red-400 text-white" : "bg-transparent"}
+        flex-shrink-0  w-40 md:w-full rounded-2xl hover:bg-red-400 text-xs hover:text-white bg-neutral-100 text-left transition-colors duration-150
+        ${locationActive === projectId ? "!bg-red-500 text-white" : "bg-transparent"}
         `}
       >
         <img
@@ -26,7 +26,7 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
           className="w-full aspect-square rounded-2xl object-cover"
         />
         <div className="px-2 py-1 mb-1">
-          <h1 className="md:text-lg font-semibold">{project.title}</h1>
+          <h1 className="font-semibold text-center">{project.title}</h1>
           {/* <p className="truncate">
          
             {project.description ||
