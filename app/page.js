@@ -60,16 +60,16 @@ export default function Page() {
 
       <div
         onClick={() => setShowBar(!showBar)}
-        className="z-20 fixed right-1/2 translate-x-1/2 px-4 py-2 bg-white rounded-t-3xl md:hidden transition-all duration-150 ease-in-out cursor-pointer "
+        className="z-20 fixed right-1/2 translate-x-1/2 px-2 py-1 bg-white rounded-t-3xl md:hidden transition-all duration-150 ease-in-out cursor-pointer "
         style={{
-          bottom: showBar ? "155px" : "-5px",
+          bottom: showBar ? "160px" : "0px",
         }}
       >
-        {showBar ? <ChevronDown /> : <ChevronUp />}
+        {showBar ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
       </div>
 
       <div
-        className={`z-20 gap-2 shadow-md p-2 fixed bottom-0 md:left-0 md:relative bg-white flex md:flex-col md:w-[300px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${showBar ? "" : "hidden md:flex"}`}
+        className={`z-20 gap-2 shadow-md p-2 fixed bottom-0 md:left-0 md:relative bg-white flex md:flex-col md:w-[220px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${showBar ? "" : "hidden md:flex"}`}
       >
         <Bar
           projects={projects}

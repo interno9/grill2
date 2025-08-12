@@ -69,16 +69,16 @@ const MarkerComponent = ({
         className="hover:scale-110 transition-transform duration-150 ease-in-out"
       >
         <Popup>
-          <div className="w-[220px] p-3 shadow-md rounded-2xl">
+          <div className="w-[220px] shadow-md rounded-2xl p-2">
             <Swiperino imgs={project.imageUrls} videos={project.videosUrls} />
-            <h1 className="font-bold md:text-xl my-1 text-center">
+            <h1 className="font-bold tracking-tight mt-1 text-center">
               {project.title}
             </h1>
-            <div className="text-xs">
+            <div className="text-xs font-bold p-1 tracking-tight leading-3">
               {project.description ||
                 "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}
             </div>
-            <div className="flex gap-2 justify-evenly mt-2">
+            <div className="flex gap-2 justify-evenly my-2">
               <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
                 <a
                   style={{

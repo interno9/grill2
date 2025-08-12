@@ -25,14 +25,9 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
           className="w-full aspect-square rounded-2xl object-cover"
         />
 
-        <h1 className="font-semibold text-center p-0.5 text-[10px] md:text-sm">
+        <h1 className="font-semibold text-center p-0.5 tracking-tight">
           {project.title}
         </h1>
-        {/* <p className="truncate">
-         
-            {project.description ||
-              "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}
-          </p> */}
       </button>
     );
   });

@@ -62,10 +62,6 @@ nav * {
   padding: 0.2em 0.5em;
   border-radius: 3em;
 }
-nav *:hover {
-  background-color: red;
-  color: white;
-}
 
 .leaflet-popup-content {
   padding: 0 !important;

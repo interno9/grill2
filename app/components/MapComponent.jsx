@@ -28,7 +28,13 @@ function ResizeMap({ showBar }) {
   return null;
 }
 
-const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
+const MapApp = ({
+  projects,
+  locationActive,
+  setLocationActive,
+  showBar,
+  setCategoryActive,
+}) => {
   const zoom = 15;
 
   const positions = {
@@ -51,11 +57,15 @@ const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
     <div
       className={`transition-all duration-150 ease-in-out w-full fixed ${showBar ? "h-[calc(100dvh-165px)] md:h-[100dvh]" : "h-[100dvh]"}`}
     >
-      <nav className="fixed m-3 top-0 md:left-[calc(300px)] z-50 text-black backdrop-blur-md flex gap-3 p-3 shadow-md font-bold text-sm rounded-full">
+      <nav className="fixed m-2 top-0 md:left-[calc(220px)] z-50 text-black backdrop-blur-md flex gap-2 p-2 shadow-md font-bold text-xs rounded-full">
         <select
+          defaultValue=""
+          className="ring-0"
           onChange={(e) => handleLocationChange(e.target.value)}
-          defaultValue="lugano"
         >
+          <option value="" disabled>
+            Città
+          </option>
           <option value="lugano">Lugano</option>
           <option value="bellinzona">Bellinzona</option>
           <option value="locarno">Locarno</option>
@@ -63,10 +73,15 @@ const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
         </select>
 
         <select
+          defaultValue=""
+          className="ring-0"
           onChange={(e) => {
-            console.log("Filter selected:", e.target.value);
+            setCategoryActive(e.target.value);
           }}
         >
+          <option value="" disabled>
+            Categorie
+          </option>
           <option value="kebab">Kebab</option>
           <option value="pizza">Pizza</option>
           <option value="sushi">Sushi</option>
@@ -85,7 +100,7 @@ const MapApp = ({ projects, locationActive, setLocationActive, showBar }) => {
       </nav>
 
       <MapContainer
-        className="absolute w-full md:w-[calc(100vw-300px)] top-0 right-0 z-0"
+        className="absolute w-full md:w-[calc(100vw-220px)] top-0 right-0 z-0"
         style={{
           height: "100%",
           zIndex: 0,
