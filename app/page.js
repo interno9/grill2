@@ -62,7 +62,7 @@ export default function Page() {
         onClick={() => setShowBar(!showBar)}
         className="z-20 fixed right-1/2 translate-x-1/2 px-4 py-2 bg-white rounded-t-3xl md:hidden transition-all duration-150 ease-in-out cursor-pointer "
         style={{
-          bottom: showBar ? "160px" : "0px",
+          bottom: showBar ? "155px" : "-5px",
         }}
       >
         {showBar ? <ChevronDown /> : <ChevronUp />}
