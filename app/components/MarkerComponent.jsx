@@ -69,7 +69,7 @@ const MarkerComponent = ({
         className="hover:scale-110 transition-transform duration-150 ease-in-out"
       >
         <Popup>
-          <div className="w-[220px] shadow-md rounded-2xl p-2">
+          <div className="w-[280px] shadow-md rounded-2xl p-2">
             <Swiperino imgs={project.imageUrls} videos={project.videosUrls} />
             <h1 className="font-bold tracking-tight mt-1 text-center">
               {project.title}
