@@ -66,12 +66,12 @@ const MapApp = ({
           onChange={(e) => setSearch(e.target.value)}
           type="text"
           placeholder="Search..."
-          className="top-0 w-40  hidden md:block font-bold border border-neutral-300 rounded-full px-2 py-2 text-sm ring-0 focus:ring-0 focus:outline-none"
+          className="top-0 w-32  font-bold border border-neutral-300 rounded-full px-2 py-2 ring-0 focus:ring-0 focus:outline-none"
         />
 
         <select
           defaultValue=""
-          className="ring-0"
+          className="ring-0 border border-neutral-300 rounded-full"
           onChange={(e) => handleLocationChange(e.target.value)}
         >
           <option value="" disabled>
@@ -85,7 +85,7 @@ const MapApp = ({
 
         <select
           defaultValue=""
-          className="ring-0"
+          className="ring-0 border border-neutral-300 rounded-full"
           onChange={(e) => {
             setCategoryActive(e.target.value);
           }}
@@ -148,10 +148,27 @@ const MapApp = ({
 
         {projects.map((project, index) => {
           const projectId = project.slug?.current || index;
+
+          // Determine position from either new location field or old positionN/E fields
+          let lat, lng;
+
+          if (project.location?.lat != null && project.location?.lng != null) {
+            // Use new location field if available
+            lat = project.location.lat;
+            lng = project.location.lng;
+          } else if (project.positionN != null && project.positionE != null) {
+            // Fallback to old position fields
+            lat = project.positionN;
+            lng = project.positionE;
+          } else {
+            // Skip projects without valid position data
+            return null;
+          }
+
           return (
             <MarkerComponent
               key={projectId}
-              position={[project.positionN, project.positionE]}
+              position={[lat, lng]}
               isActive={locationActive === projectId}
               locationActive={locationActive}
               setLocationActive={setLocationActive}

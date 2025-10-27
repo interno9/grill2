@@ -1,3 +1,4 @@
+export { AddressGeocode } from "../components/AddressGeocode";
 export default {
   name: "project",
   title: "Project",
@@ -48,7 +49,6 @@ export default {
       name: "positionN",
       title: "Posizione N",
       type: "number",
-
       validation: (Rule) => Rule.required(),
     },
 
@@ -56,8 +56,16 @@ export default {
       name: "positionE",
       title: "Posizione E",
       type: "number",
-
       validation: (Rule) => Rule.required(),
+    },
+
+    {
+      name: "location",
+      title: "Posizione (Address)",
+      type: "geopoint",
+      components: {
+        input: AddressGeocode,
+      },
     },
 
     // schedule
@@ -66,12 +74,6 @@ export default {
       title: "Schedule",
       type: "array",
       of: [{ type: "string" }],
-    },
-
-    {
-      name: "location",
-      title: "Location",
-      type: "string",
     },
 
     // instagram
