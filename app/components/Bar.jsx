@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function Bar({ projects, setLocationActive, locationActive }) {
+export default function Bar({ venues, setLocationActive, locationActive }) {
   useEffect(() => {
     if (locationActive != null) {
       const el = document.getElementById(`${locationActive}`);
@@ -8,26 +8,26 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
     }
   }, [locationActive]);
 
-  return projects.map((project, index) => {
-    const projectId = project.slug?.current ?? index;
+  return venues.map((venue, index) => {
+    const venueId = venue._id ?? index;
 
     return (
       <button
-        id={`${projectId}`}
-        key={projectId}
-        onClick={() => setLocationActive(projectId)}
+        id={`${venueId}`}
+        key={venueId}
+        onClick={() => setLocationActive(venueId)}
         className={`flex-shrink-0 w-44 md:w-full rounded-2xl md:hover:bg-red-400 text-xs md:hover:text-white bg-neutral-100 text-left transition-colors duration-150
-        ${locationActive === projectId ? "!bg-red-500 text-white" : "bg-transparent"}
+        ${locationActive === venueId ? "!bg-red-500 text-white" : "bg-transparent"}
         `}
       >
         <img
-          src={project.imageUrls[0]}
-          alt={project.title}
+          src={venue.imageUrls?.[0]}
+          alt={venue.title}
           className="w-full aspect-square rounded-2xl object-cover"
         />
 
         <h1 className="font-semibold text-center p-0.5 tracking-tight">
-          {project.title}
+          {venue.title}
         </h1>
       </button>
     );

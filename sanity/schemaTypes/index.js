@@ -1,5 +1,6 @@
-import project from "./project";
+import city from "./city";
+import venue from "./venue";
 
 export const schema = {
-  types: [project],
+  types: [city, venue],
 };

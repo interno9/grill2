@@ -2,14 +2,14 @@ import { Marker, Popup } from "react-leaflet";
 import { useEffect, useRef, useState } from "react"; // Added useState import
 import { Icon } from "leaflet";
 import Swiperino from "./Swiperino";
-import { Globe, Instagram, Phone, Map } from "lucide-react";
+import { Globe, Instagram, Phone, GlobeIcon } from "lucide-react";
 
 const MarkerComponent = ({
   id,
   position,
   isActive,
   setLocationActive,
-  project,
+  venue,
 }) => {
   const markerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null); // Moved useState here
@@ -53,7 +53,7 @@ const MarkerComponent = ({
 
   // Custom icon logic
   const iconUrl =
-    project.title === "Fully Burger"
+    venue.title === "Fully Burger"
       ? "/assets/icons/fullySticker.webp"
       : "/assets/icons/positionIcon.svg";
 
@@ -70,56 +70,70 @@ const MarkerComponent = ({
       >
         <Popup>
           <div className="w-[280px] shadow-md rounded-2xl p-2">
-            <Swiperino imgs={project.imageUrls} videos={project.videosUrls} />
+            <Swiperino imgs={venue.imageUrls || []} videos={[]} />
             <h1 className="font-bold tracking-tight mt-1 text-center">
-              {project.title}
+              {venue.title}
             </h1>
             <div className="text-xs font-bold p-1 tracking-tight leading-3">
-              {project.description ||
-                "Un accogliente locale nel cuore di Lugano, specialità tipiche di cucina locale."}
+              {venue.description}
             </div>
             <div className="flex gap-2 justify-evenly my-2">
-              <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
-                <a
-                  style={{
-                    color: "white",
-                  }}
-                  href={`tel:${project.phone}`}
-                  target="_blank"
-                >
-                  <Phone size={14} />
-                </a>
-              </button>
+              {venue.phone && (
+                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                  <a
+                    style={{
+                      color: "white",
+                    }}
+                    href={`tel:${venue.phone}`}
+                    target="_blank"
+                  >
+                    <Phone size={14} />
+                  </a>
+                </button>
+              )}
 
-              <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+              {/* <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
                 <a
                   style={{
                     color: "white",
                   }}
                   href={
-                    project.googleMap ||
+                    venue.googleMap ||
                     `https://www.google.com/maps/search/?api=1&query=${position.lat},${position.lng}`
                   }
                   target="_blank"
                 >
                   <Map size={14} />
                 </a>
-              </button>
+              </button> */}
 
-              <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
-                <a
-                  style={{
-                    color: "white",
-                  }}
-                  href={
-                    project.instagram ||
-                    `https://www.instagram.com/barpinard/?hl=en`
-                  }
-                  target="_blank"
-                >
-                  <Instagram size={14} />
-                </a>
-              </button>
+              {venue.instagram && (
+                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                  <a
+                    style={{
+                      color: "white",
+                    }}
+                    href={`https://www.instagram.com/${venue.instagram}/`}
+                    target="_blank"
+                  >
+                    <Instagram size={14} />
+                  </a>
+                </button>
+              )}
+
+              {venue.website && (
+                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                  <a
+                    style={{
+                      color: "white",
+                    }}
+                    href={venue.website}
+                    target="_blank"
+                  >
+                    <GlobeIcon size={14} />
+                  </a>
+                </button>
+              )}
 
               <button className="bg-red-500 text-white w-[30px] h-[30px] rounded-full hover:opacity-50 transition-all">
                 <a

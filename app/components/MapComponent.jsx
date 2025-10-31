@@ -54,8 +54,9 @@ function ResizeMap({ showBar }) {
 }
 
 const MapApp = ({
-  projects,
-  allProjects,
+  venues,
+  allVenues,
+  cities,
   locationActive,
   setLocationActive,
   showBar,
@@ -66,29 +67,62 @@ const MapApp = ({
 }) => {
   const zoom = 15;
 
-  const positions = {
-    lugano: [46.0057, 8.9611],
-    bellinzona: [46.1946, 9.0244],
-    locarno: [46.167, 8.7943],
-    agno: [45.997, 8.8994],
-  };
+  // Convert cities from Sanity to positions object
+  const positions = useMemo(() => {
+    if (!cities || cities.length === 0) return {};
+
+    return cities.reduce((acc, city) => {
+      if (city.location?.lat && city.location?.lng && city.location?.address) {
+        // Use the address (city name) as the key, converted to lowercase
+        const cityName = city.location.address
+          .toLowerCase()
+          .split(",")[0]
+          .trim();
+        acc[cityName] = [city.location.lat, city.location.lng];
+      }
+      return acc;
+    }, {});
+  }, [cities]);
 
   const [darkMode, setDarkMode] = useState(false);
   const [noLabels, setNoLabels] = useState(false);
   const [satelliteMode, setSatelliteMode] = useState(false);
-  const [startCoordinates, setStartCoordinates] = useState(positions.lugano);
+  const [startCoordinates, setStartCoordinates] = useState(null);
 
-  // Extract unique tags from all projects (not filtered)
+  // Set initial coordinates to user's current position
+  useEffect(() => {
+    if (startCoordinates) return; // Already set
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setStartCoordinates([
+          position.coords.latitude,
+          position.coords.longitude,
+        ]);
+      },
+      (error) => {
+        console.error("Error obtaining location:", error);
+        // Fallback to first city if geolocation fails
+        if (Object.keys(positions).length > 0) {
+          const firstCity = Object.values(positions)[0];
+          if (firstCity) {
+            setStartCoordinates(firstCity);
+          }
+        }
+      },
+      {
+        enableHighAccuracy: true,
+      }
+    );
+  }, [positions, startCoordinates]);
+
+  // Extract unique tags from all venues (not filtered)
   const uniqueTags = useMemo(() => {
-    const projectsToUse = allProjects || projects;
-    const allTags = projectsToUse.flatMap((project) => project.tags || []);
+    const venuesToUse = allVenues || venues;
+    const allTags = venuesToUse.flatMap((venue) => venue.tags || []);
     const uniqueSet = new Set(allTags);
     return Array.from(uniqueSet).sort();
-  }, [allProjects, projects]);
-
-  const handleLocationChange = (location) => {
-    setStartCoordinates(positions[location]);
-  };
+  }, [allVenues, venues]);
 
   return (
     <div
@@ -106,15 +140,18 @@ const MapApp = ({
         <select
           defaultValue=""
           className="ring-0 border border-neutral-300 rounded-full"
-          onChange={(e) => handleLocationChange(e.target.value)}
+          onChange={(e) => {
+            setStartCoordinates(positions[e.target.value]);
+          }}
         >
           <option value="" disabled>
             Città
           </option>
-          <option value="lugano">Lugano</option>
-          <option value="bellinzona">Bellinzona</option>
-          <option value="locarno">Locarno</option>
-          <option value="agno">Agno</option>
+          {Object.keys(positions).map((cityKey) => (
+            <option key={cityKey} value={cityKey}>
+              {cityKey.charAt(0).toUpperCase() + cityKey.slice(1)}
+            </option>
+          ))}
         </select>
 
         <select
@@ -190,33 +227,29 @@ const MapApp = ({
           />
         )}
 
-        {projects.map((project, index) => {
-          const projectId = project.slug?.current || index;
+        {venues.map((venue, index) => {
+          const venueId = venue._id || index;
 
-          // Determine position from either new location field or old positionN/E fields
+          // Determine position from location field
           let lat, lng;
 
-          if (project.location?.lat != null && project.location?.lng != null) {
-            // Use new location field if available
-            lat = project.location.lat;
-            lng = project.location.lng;
-          } else if (project.positionN != null && project.positionE != null) {
-            // Fallback to old position fields
-            lat = project.positionN;
-            lng = project.positionE;
+          if (venue.location?.lat != null && venue.location?.lng != null) {
+            // Use location field
+            lat = venue.location.lat;
+            lng = venue.location.lng;
           } else {
-            // Skip projects without valid position data
+            // Skip venues without valid position data
             return null;
           }
 
           return (
             <MarkerComponent
-              key={projectId}
+              key={venueId}
               position={[lat, lng]}
-              isActive={locationActive === projectId}
+              isActive={locationActive === venueId}
               locationActive={locationActive}
               setLocationActive={setLocationActive}
-              project={project}
+              venue={venue}
             />
           );
         })}

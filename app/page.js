@@ -7,34 +7,42 @@ import Bar from "./components/Bar";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Page() {
-  const [projects, setProjects] = useState([]);
+  const [venues, setVenues] = useState([]);
+  const [cities, setCities] = useState([]);
   const [locationActive, setLocationActive] = useState(null);
   const [categoryActive, setCategoryActive] = useState(null);
   const [showBar, setShowBar] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const query = `*[_type == "project"]{
-      title,
-      slug,
-      description,
-      "imageUrls": images[].asset->url,
-      "videosUrls": videos[].asset->url,
-      positionN,
-      positionE,
-      location,
-      schedule,
-      instagram,
-      facebook,
-      tripadvisor,
-      website,
-      phone,
-      googleMap,
+    const venueQuery = `*[_type == "venue"]{
+      _id,
+      "title": venueData.name,
+      "description": venueData.description,
+      "imageUrls": select(
+        count(customImages) > 0 => customImages[].asset->url,
+        venueData.photoUrls
+      ),
+      "location": venueData.location,
+      "schedule": venueData.openingHours,
+      "instagram": coalesce(instagramOverride, venueData.instagram),
+      "website": venueData.website,
+      "phone": venueData.phone,
+      "googleMap": venueData.googleMapsUrl,
       tags
     }`;
 
-    getSanityData(query).then((res) => {
-      if (res) setProjects(res);
+    const cityQuery = `*[_type == "city"]{
+      _id,
+      location
+    }`;
+
+    getSanityData(venueQuery).then((res) => {
+      if (res) setVenues(res);
+    });
+
+    getSanityData(cityQuery).then((res) => {
+      if (res) setCities(res);
     });
   }, []);
 
@@ -69,54 +77,53 @@ export default function Page() {
   const buildPatterns = (query) =>
     normalize(query).trim().split(/\s+/).filter(Boolean).map(tokenToPattern);
 
-  const fieldText = (p) => {
-    const title = p.title || "";
-    const desc = p.description || "";
-    const tags = Array.isArray(p.tags) ? p.tags.join(" ") : "";
+  const fieldText = (v) => {
+    const title = v.title || "";
+    const desc = v.description || "";
+    const tags = Array.isArray(v.tags) ? v.tags.join(" ") : "";
     return normalize(`${title} ${tags} ${desc}`);
   };
 
-  // Filter projects based on search and category
-  const filteredProjects = useMemo(() => {
-    let filtered = projects;
+  // Filter venues based on search and category
+  const filteredVenues = useMemo(() => {
+    let filtered = venues;
 
     // Filter by category
     if (categoryActive && categoryActive !== "all") {
-      filtered = filtered.filter((p) => p.tags?.includes(categoryActive));
+      filtered = filtered.filter((v) => v.tags?.includes(categoryActive));
     }
 
     // Filter by search
     const q = search.trim();
     if (q) {
       const patterns = buildPatterns(q);
-      filtered = filtered.filter((p) => {
-        const text = fieldText(p);
+      filtered = filtered.filter((v) => {
+        const text = fieldText(v);
         return patterns.every((re) => re.test(text));
       });
     }
 
     return filtered;
-  }, [projects, search, categoryActive]);
+  }, [venues, search, categoryActive]);
 
-  // Slug focus: trigger when exactly one project matches slug partially
+  // ID focus: trigger when exactly one venue matches search
   useEffect(() => {
-    if (!search || projects.length === 0) return;
+    if (!search || venues.length === 0) return;
     const q = normalize(search);
-    const matches = projects.filter((p) =>
-      normalize(p.slug?.current || "").includes(q)
-    );
+    const matches = venues.filter((v) => normalize(v.title || "").includes(q));
     if (matches.length === 1) {
-      setLocationActive(matches[0].slug.current);
+      setLocationActive(matches[0]._id);
     } else {
       setLocationActive(null);
     }
-  }, [search, projects]);
+  }, [search, venues]);
 
   return (
     <div className="flex w-full h-[100dvh] relative">
       <Map
-        projects={filteredProjects}
-        allProjects={projects}
+        venues={filteredVenues}
+        allVenues={venues}
+        cities={cities}
         locationActive={locationActive}
         setLocationActive={setLocationActive}
         setCategoryActive={setCategoryActive}
@@ -142,7 +149,7 @@ export default function Page() {
         }`}
       >
         <Bar
-          projects={filteredProjects}
+          venues={filteredVenues}
           locationActive={locationActive}
           setLocationActive={setLocationActive}
           setCategoryActive={setCategoryActive}
