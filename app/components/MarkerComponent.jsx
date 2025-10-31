@@ -24,13 +24,13 @@ const MarkerComponent = ({
   // Shorten day names
   const shortenDay = (day) => {
     const dayMap = {
-      'Monday': 'Mon',
-      'Tuesday': 'Tue',
-      'Wednesday': 'Wed',
-      'Thursday': 'Thu',
-      'Friday': 'Fri',
-      'Saturday': 'Sat',
-      'Sunday': 'Sun'
+      Monday: "Mon",
+      Tuesday: "Tue",
+      Wednesday: "Wed",
+      Thursday: "Thu",
+      Friday: "Fri",
+      Saturday: "Sat",
+      Sunday: "Sun",
     };
     return dayMap[day] || day;
   };
@@ -38,68 +38,88 @@ const MarkerComponent = ({
   // Group consecutive days with same hours into ranges
   const groupSchedule = (schedule) => {
     if (!schedule || schedule.length === 0) return [];
-    
+
     // Separate closed and open days
     const openDays = [];
     const closedDays = [];
-    
+
     schedule.forEach((entry) => {
       const match = entry.match(/^([^:]+):\s*(.+)$/);
       if (!match) {
         openDays.push({ original: entry });
         return;
       }
-      
+
       const [, day, hours] = match;
-      if (hours.toLowerCase().includes('closed')) {
+      if (hours.toLowerCase().includes("closed")) {
         closedDays.push({ day, hours });
       } else {
         openDays.push({ day, hours });
       }
     });
-    
+
     // Group open days
     const grouped = [];
     let currentGroup = null;
-    
+
     openDays.forEach((item, index) => {
       if (item.original) {
         grouped.push(item.original);
         return;
       }
-      
+
       if (!currentGroup) {
-        currentGroup = { startDay: item.day, endDay: item.day, hours: item.hours };
+        currentGroup = {
+          startDay: item.day,
+          endDay: item.day,
+          hours: item.hours,
+        };
       } else if (currentGroup.hours === item.hours) {
         currentGroup.endDay = item.day;
       } else {
         if (currentGroup.startDay === currentGroup.endDay) {
-          grouped.push(`${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`);
+          grouped.push(
+            `${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`
+          );
         } else {
-          grouped.push(`${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`);
+          grouped.push(
+            `${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`
+          );
         }
-        currentGroup = { startDay: item.day, endDay: item.day, hours: item.hours };
+        currentGroup = {
+          startDay: item.day,
+          endDay: item.day,
+          hours: item.hours,
+        };
       }
-      
+
       if (index === openDays.length - 1 && currentGroup) {
         if (currentGroup.startDay === currentGroup.endDay) {
-          grouped.push(`${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`);
+          grouped.push(
+            `${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`
+          );
         } else {
-          grouped.push(`${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`);
+          grouped.push(
+            `${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`
+          );
         }
       }
     });
-    
+
     // Group closed days
     if (closedDays.length > 0) {
       if (closedDays.length === 1) {
-        grouped.push(`${shortenDay(closedDays[0].day)}: ${closedDays[0].hours}`);
+        grouped.push(
+          `${shortenDay(closedDays[0].day)}: ${closedDays[0].hours}`
+        );
       } else {
-        const closedDayNames = closedDays.map(d => shortenDay(d.day)).join(', ');
+        const closedDayNames = closedDays
+          .map((d) => shortenDay(d.day))
+          .join(", ");
         grouped.push(`${closedDayNames}: ${closedDays[0].hours}`);
       }
     }
-    
+
     return grouped;
   };
 

@@ -123,28 +123,35 @@ export default function Page() {
     if (!venue.schedule || venue.schedule.length === 0) return true;
 
     const now = new Date();
-    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
-    const todaySchedule = venue.schedule.find(entry => 
+    const todaySchedule = venue.schedule.find((entry) =>
       entry.toLowerCase().startsWith(currentDay.toLowerCase())
     );
 
     if (!todaySchedule) return true;
-    if (todaySchedule.toLowerCase().includes('closed')) return false;
+    if (todaySchedule.toLowerCase().includes("closed")) return false;
 
-    const timeMatch = todaySchedule.match(/(\d{1,2}):(\d{2})\s*(AM|PM).*?(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    const timeMatch = todaySchedule.match(
+      /(\d{1,2}):(\d{2})\s*(AM|PM).*?(\d{1,2}):(\d{2})\s*(AM|PM)/i
+    );
     if (!timeMatch) return true;
 
-    const [, startHour, startMin, startPeriod, endHour, endMin, endPeriod] = timeMatch;
-    
+    const [, startHour, startMin, startPeriod, endHour, endMin, endPeriod] =
+      timeMatch;
+
     let openTime = parseInt(startHour) * 60 + parseInt(startMin);
     let closeTime = parseInt(endHour) * 60 + parseInt(endMin);
-    
-    if (startPeriod.toUpperCase() === 'PM' && startHour !== '12') openTime += 12 * 60;
-    if (startPeriod.toUpperCase() === 'AM' && startHour === '12') openTime = parseInt(startMin);
-    if (endPeriod.toUpperCase() === 'PM' && endHour !== '12') closeTime += 12 * 60;
-    if (endPeriod.toUpperCase() === 'AM' && endHour === '12') closeTime = parseInt(endMin);
+
+    if (startPeriod.toUpperCase() === "PM" && startHour !== "12")
+      openTime += 12 * 60;
+    if (startPeriod.toUpperCase() === "AM" && startHour === "12")
+      openTime = parseInt(startMin);
+    if (endPeriod.toUpperCase() === "PM" && endHour !== "12")
+      closeTime += 12 * 60;
+    if (endPeriod.toUpperCase() === "AM" && endHour === "12")
+      closeTime = parseInt(endMin);
 
     return currentTime >= openTime && currentTime <= closeTime;
   };

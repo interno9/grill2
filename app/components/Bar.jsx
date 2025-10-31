@@ -10,11 +10,11 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
           (v) => (v._id || venues.indexOf(v)) === locationActive
         );
         const isLastVenue = venueIndex === venues.length - 1;
-        
-        el.scrollIntoView({ 
-          behavior: "smooth", 
+
+        el.scrollIntoView({
+          behavior: "smooth",
           block: isLastVenue ? "end" : "center",
-          inline: "nearest"
+          inline: "nearest",
         });
       }
     }

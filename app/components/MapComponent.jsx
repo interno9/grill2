@@ -178,8 +178,8 @@ const MapApp = ({
         <button
           onClick={() => setOpenNowFilter(!openNowFilter)}
           className={`px-3 py-2 rounded-full transition-all border border-neutral-300 ${
-            openNowFilter 
-              ? "bg-green-500 text-white border-green-500" 
+            openNowFilter
+              ? "bg-green-500 text-white border-green-500"
               : "bg-white text-black hover:bg-gray-100"
           }`}
         >
