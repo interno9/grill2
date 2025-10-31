@@ -21,6 +21,88 @@ const MarkerComponent = ({
     }
   }, [isActive]);
 
+  // Shorten day names
+  const shortenDay = (day) => {
+    const dayMap = {
+      'Monday': 'Mon',
+      'Tuesday': 'Tue',
+      'Wednesday': 'Wed',
+      'Thursday': 'Thu',
+      'Friday': 'Fri',
+      'Saturday': 'Sat',
+      'Sunday': 'Sun'
+    };
+    return dayMap[day] || day;
+  };
+
+  // Group consecutive days with same hours into ranges
+  const groupSchedule = (schedule) => {
+    if (!schedule || schedule.length === 0) return [];
+    
+    // Separate closed and open days
+    const openDays = [];
+    const closedDays = [];
+    
+    schedule.forEach((entry) => {
+      const match = entry.match(/^([^:]+):\s*(.+)$/);
+      if (!match) {
+        openDays.push({ original: entry });
+        return;
+      }
+      
+      const [, day, hours] = match;
+      if (hours.toLowerCase().includes('closed')) {
+        closedDays.push({ day, hours });
+      } else {
+        openDays.push({ day, hours });
+      }
+    });
+    
+    // Group open days
+    const grouped = [];
+    let currentGroup = null;
+    
+    openDays.forEach((item, index) => {
+      if (item.original) {
+        grouped.push(item.original);
+        return;
+      }
+      
+      if (!currentGroup) {
+        currentGroup = { startDay: item.day, endDay: item.day, hours: item.hours };
+      } else if (currentGroup.hours === item.hours) {
+        currentGroup.endDay = item.day;
+      } else {
+        if (currentGroup.startDay === currentGroup.endDay) {
+          grouped.push(`${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`);
+        } else {
+          grouped.push(`${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`);
+        }
+        currentGroup = { startDay: item.day, endDay: item.day, hours: item.hours };
+      }
+      
+      if (index === openDays.length - 1 && currentGroup) {
+        if (currentGroup.startDay === currentGroup.endDay) {
+          grouped.push(`${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`);
+        } else {
+          grouped.push(`${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`);
+        }
+      }
+    });
+    
+    // Group closed days
+    if (closedDays.length > 0) {
+      if (closedDays.length === 1) {
+        grouped.push(`${shortenDay(closedDays[0].day)}: ${closedDays[0].hours}`);
+      } else {
+        const closedDayNames = closedDays.map(d => shortenDay(d.day)).join(', ');
+        grouped.push(`${closedDayNames}: ${closedDays[0].hours}`);
+      }
+    }
+    
+    return grouped;
+  };
+
   // Get user location
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -42,12 +124,12 @@ const MarkerComponent = ({
   // Scroll bar entry into view on marker click
   const handleClick = () => {
     setLocationActive(id);
-    const el = document.getElementById(`bar-${id}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const el = document.getElementById(`${id}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   const userLocationIcon = new Icon({
-    iconUrl: "/assets/icons/currentPosition.png",
+    iconUrl: "/assets/icons/currentPosition2.png",
     iconSize: [50, 50],
   });
 
@@ -69,17 +151,20 @@ const MarkerComponent = ({
         className="hover:scale-110 transition-transform duration-150 ease-in-out"
       >
         <Popup>
-          <div className="w-[280px] shadow-md rounded-2xl p-2">
-            <Swiperino imgs={venue.imageUrls || []} videos={[]} />
-            <h1 className="font-bold tracking-tight mt-1 text-center">
+          <div className="w-[300px] shadow-md rounded-xl p-2">
+            <h1 className="font-bold tracking-tight text-center mb-2">
               {venue.title}
             </h1>
-            <div className="text-xs font-bold p-1 tracking-tight leading-3">
-              {venue.description}
-            </div>
-            <div className="flex gap-2 justify-evenly my-2">
+            <Swiperino imgs={venue.imageUrls || []} videos={[]} />
+
+            {venue.description && (
+              <div className="text-xs pt-4 font-bold tracking-tight leading-3">
+                {venue.description}
+              </div>
+            )}
+            <div className="flex gap-2 justify-start py-2">
               {venue.phone && (
-                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                   <a
                     style={{
                       color: "white",
@@ -92,7 +177,7 @@ const MarkerComponent = ({
                 </button>
               )}
 
-              {/* <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+              {/* <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                 <a
                   style={{
                     color: "white",
@@ -108,7 +193,7 @@ const MarkerComponent = ({
               </button> */}
 
               {venue.instagram && (
-                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                   <a
                     style={{
                       color: "white",
@@ -122,7 +207,7 @@ const MarkerComponent = ({
               )}
 
               {venue.website && (
-                <button className="bg-red-500 text-white p-2 rounded-full hover:opacity-50 transition-all">
+                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                   <a
                     style={{
                       color: "white",
@@ -135,7 +220,7 @@ const MarkerComponent = ({
                 </button>
               )}
 
-              <button className="bg-red-500 text-white w-[30px] h-[30px] rounded-full hover:opacity-50 transition-all">
+              {/* <button className="bg-[#c52627] text-white w-[30px] h-[30px] rounded-full hover:opacity-50 transition-all">
                 <a
                   style={{
                     color: "white",
@@ -148,8 +233,22 @@ const MarkerComponent = ({
                     className="rounded-full"
                   />
                 </a>
-              </button>
+              </button> */}
             </div>
+
+            {/* Opening Hours */}
+            {venue.schedule && venue.schedule.length > 0 && (
+              <div className="border-t border-gray-200 mt-4 pt-4">
+                <h2 className="font-bold text-xs mb-2">Opening Hours</h2>
+                <div className="space-y-1">
+                  {groupSchedule(venue.schedule).map((hour, index) => (
+                    <div key={index} className="text-xs text-gray-700">
+                      {hour}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </Popup>
       </Marker>
@@ -158,8 +257,8 @@ const MarkerComponent = ({
       {userLocation && (
         <Marker position={userLocation} icon={userLocationIcon}>
           <Popup>
-            <div className="text-center font-semibold">
-              <h1>You are here!</h1>
+            <div className="text-center font-semibold p-1 text-[10px]">
+              You are here!
             </div>
           </Popup>
         </Marker>
