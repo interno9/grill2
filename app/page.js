@@ -256,7 +256,7 @@ export default function Page() {
 
         {/* Sidebar / bottom bar */}
         <div
-          className={`absolute z-20 gap-2 shadow-md p-2 bottom-0 md:left-0 md:relative bg-white flex md:flex-col md:w-[320px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${
+          className={`bg-white absolute z-20 gap-2 shadow-md p-2 bottom-0 md:left-0 md:relative flex md:flex-col md:w-[340px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${
             showBar ? "" : "hidden md:flex"
           }`}
         >

@@ -25,12 +25,20 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
 
     const radomColor = () => {
       const colors = [
-        "bg-red-400",
-        "bg-blue-400",
-        "bg-green-400",
-        "bg-yellow-400",
-        "bg-purple-400",
-        "bg-pink-400",
+        // "bg-red-400",
+        // "bg-blue-400",
+        // "bg-green-400",
+        // "bg-yellow-400",
+        // "bg-purple-400",
+        // "bg-pink-400",
+        "bg-[#d3235b]",
+        "bg-[#241757]",
+        "bg-[#e6b66a]",
+        "bg-[#98b6aa]",
+        "bg-[#aa2226]",
+        "bg-[#a4f96c]",
+        "bg-[#ff7e20]",
+        "bg-[#85b7df]",
       ];
       return colors[Math.floor(Math.random() * colors.length)];
     };
@@ -42,9 +50,8 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`${radomColor()} flex-shrink-0 w-44 md:w-full rounded-xl transition-all text-left duration-200 group p-2
-        ${isActive ? "!bg-[#c52627] text-white" : "md:hover:text-white"}
-        `}
+        className={`${radomColor()} text-black flex-shrink-0 w-44 md:w-full rounded-xl transition-all text-left duration-200 group p-2 
+          ${isActive ? `${radomColor()} text-white` : ""}`}
       >
         <h1 className="font-semibold text-center p-0.5 tracking-tight text-white text-xs">
           {venue.title}

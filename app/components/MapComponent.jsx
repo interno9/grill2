@@ -131,7 +131,7 @@ const MapApp = ({
     <div
       className={`transition-all duration-150 ease-in-out w-full absolute ${showBar ? "h-[calc(100dvh-165px)] md:h-[100dvh]" : "h-[100dvh]"}`}
     >
-      <nav className="absolute m-2 top-0 md:left-[calc(320px)] z-50 text-black backdrop-blur-md flex gap-2 p-2 shadow-md font-bold text-xs rounded-full">
+      <nav className="absolute m-2 top-0 md:left-[calc(340px)] z-50 text-black backdrop-blur-md flex gap-2 p-2 shadow-md font-bold text-xs rounded-full">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -201,7 +201,7 @@ const MapApp = ({
       </nav>
 
       <MapContainer
-        className="absolute w-full md:w-[calc(100vw-320px)] top-0 right-0 z-0"
+        className="absolute w-full md:w-[calc(100vw-340px)] top-0 right-0 z-0"
         style={{
           height: "100%",
           zIndex: 0,

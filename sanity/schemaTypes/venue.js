@@ -87,12 +87,24 @@ export default {
     select: {
       title: "venueData.name",
       subtitle: "venueData.address",
+      customImages: "customImages",
+      photoUrls: "venueData.photoUrls",
     },
     prepare(selection) {
-      const { title, subtitle } = selection;
+      const { title, subtitle, customImages, photoUrls } = selection;
+
+      // Get first image from customImages or photoUrls
+      let imageUrl = null;
+      if (customImages && customImages.length > 0 && customImages[0].asset) {
+        imageUrl = customImages[0];
+      } else if (photoUrls && photoUrls.length > 0) {
+        imageUrl = photoUrls[0];
+      }
+
       return {
         title: title || "Unnamed Venue",
-        subtitle: subtitle || "No address",
+        // subtitle: subtitle || "No address",
+        media: imageUrl,
       };
     },
   },
