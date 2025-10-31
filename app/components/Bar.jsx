@@ -10,6 +10,7 @@ export default function Bar({ projects, setLocationActive, locationActive }) {
 
   return projects.map((project, index) => {
     const projectId = project.slug?.current ?? index;
+
     return (
       <button
         id={`${projectId}`}

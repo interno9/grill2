@@ -2,9 +2,34 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useMap } from "react-leaflet";
 import MarkerComponent from "./MarkerComponent";
+
+function ZoomControl() {
+  const map = useMap();
+
+  return (
+    <div className="fixed bottom-4 right-4 z-[1000] flex flex-col gap-2">
+      <button
+        onClick={() => {
+          map.zoomIn();
+        }}
+        className="bg-white font-bold w-6 h-6 rounded-full flex items-center justify-center"
+      >
+        +
+      </button>
+      <button
+        onClick={() => {
+          map.zoomOut();
+        }}
+        className="bg-white font-bold w-6 h-6 rounded-full flex items-center justify-center"
+      >
+        −
+      </button>
+    </div>
+  );
+}
 
 function ChangeView({ center, zoom }) {
   const map = useMap();
@@ -30,6 +55,7 @@ function ResizeMap({ showBar }) {
 
 const MapApp = ({
   projects,
+  allProjects,
   locationActive,
   setLocationActive,
   showBar,
@@ -51,6 +77,14 @@ const MapApp = ({
   const [noLabels, setNoLabels] = useState(false);
   const [satelliteMode, setSatelliteMode] = useState(false);
   const [startCoordinates, setStartCoordinates] = useState(positions.lugano);
+
+  // Extract unique tags from all projects (not filtered)
+  const uniqueTags = useMemo(() => {
+    const projectsToUse = allProjects || projects;
+    const allTags = projectsToUse.flatMap((project) => project.tags || []);
+    const uniqueSet = new Set(allTags);
+    return Array.from(uniqueSet).sort();
+  }, [allProjects, projects]);
 
   const handleLocationChange = (location) => {
     setStartCoordinates(positions[location]);
@@ -84,7 +118,7 @@ const MapApp = ({
         </select>
 
         <select
-          defaultValue=""
+          value={categoryActive || ""}
           className="ring-0 border border-neutral-300 rounded-full"
           onChange={(e) => {
             setCategoryActive(e.target.value);
@@ -93,21 +127,26 @@ const MapApp = ({
           <option value="" disabled>
             Categorie
           </option>
-          <option value="kebab">Kebab</option>
-          <option value="pizza">Pizza</option>
-          <option value="sushi">Sushi</option>
-          <option value="burger">Burger</option>
-          <option value="icecream">Ice Cream</option>
           <option value="all">All</option>
-          <option value="cafe">Café</option>
-          <option value="restaurant">Restaurant</option>
-          <option value="bar">Bar</option>
-          <option value="pub">Pub</option>
-          <option value="pasta">Pasta</option>
-          <option value="tapas">Tapas</option>
-          <option value="asian">Asian</option>
-          <option value="veg">Veg</option>
+          {uniqueTags.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag.charAt(0).toUpperCase() + tag.slice(1)}
+            </option>
+          ))}
         </select>
+
+        {(search || categoryActive) && (
+          <button
+            onClick={() => {
+              setSearch("");
+              setCategoryActive(null);
+            }}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-full transition-colors"
+            title="Clear filters"
+          >
+            ✕
+          </button>
+        )}
       </nav>
 
       <MapContainer
@@ -118,10 +157,15 @@ const MapApp = ({
         }}
         center={startCoordinates}
         zoom={zoom}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
+        doubleClickZoom={false}
+        touchZoom={false}
+        zoomControl={false}
+        dragging={true}
       >
         <ChangeView center={startCoordinates} zoom={zoom} />
         <ResizeMap showBar={showBar} />
+        <ZoomControl />
 
         {!satelliteMode && (
           <TileLayer

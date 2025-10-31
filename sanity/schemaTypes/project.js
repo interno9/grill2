@@ -1,4 +1,5 @@
-export { AddressGeocode } from "../components/AddressGeocode";
+import { AddressGeocode } from "@/sanity/components/AddressGeocode";
+
 export default {
   name: "project",
   title: "Project",
@@ -49,14 +50,12 @@ export default {
       name: "positionN",
       title: "Posizione N",
       type: "number",
-      validation: (Rule) => Rule.required(),
     },
 
     {
       name: "positionE",
       title: "Posizione E",
       type: "number",
-      validation: (Rule) => Rule.required(),
     },
 
     {
@@ -120,7 +119,7 @@ export default {
 
     {
       name: "tags",
-      title: "Tags",
+      title: "Category Tags",
       type: "array",
       of: [{ type: "string" }],
     },

@@ -76,17 +76,27 @@ export default function Page() {
     return normalize(`${title} ${tags} ${desc}`);
   };
 
-  // Filter projects based on search
+  // Filter projects based on search and category
   const filteredProjects = useMemo(() => {
-    const q = search.trim();
-    if (!q) return projects;
+    let filtered = projects;
 
-    const patterns = buildPatterns(q);
-    return projects.filter((p) => {
-      const text = fieldText(p);
-      return patterns.every((re) => re.test(text));
-    });
-  }, [projects, search]);
+    // Filter by category
+    if (categoryActive && categoryActive !== "all") {
+      filtered = filtered.filter((p) => p.tags?.includes(categoryActive));
+    }
+
+    // Filter by search
+    const q = search.trim();
+    if (q) {
+      const patterns = buildPatterns(q);
+      filtered = filtered.filter((p) => {
+        const text = fieldText(p);
+        return patterns.every((re) => re.test(text));
+      });
+    }
+
+    return filtered;
+  }, [projects, search, categoryActive]);
 
   // Slug focus: trigger when exactly one project matches slug partially
   useEffect(() => {
@@ -105,10 +115,12 @@ export default function Page() {
   return (
     <div className="flex w-full h-[100dvh] relative">
       <Map
-        projects={projects}
+        projects={filteredProjects}
+        allProjects={projects}
         locationActive={locationActive}
         setLocationActive={setLocationActive}
         setCategoryActive={setCategoryActive}
+        categoryActive={categoryActive}
         showBar={showBar}
         search={search}
         setSearch={setSearch}
@@ -130,10 +142,11 @@ export default function Page() {
         }`}
       >
         <Bar
-          projects={search ? filteredProjects : projects}
+          projects={filteredProjects}
           locationActive={locationActive}
           setLocationActive={setLocationActive}
           setCategoryActive={setCategoryActive}
+          categoryActive={categoryActive}
           search={search}
           setSearch={setSearch}
         />
