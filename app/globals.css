@@ -95,3 +95,20 @@ img {
   -o-user-drag: none;
   user-drag: none;
 }
+
+.pattern {
+  background-image: url("../public/assets/imgs/pattern2.jpg");
+  background-size: cover;
+  background-color: #c3ff00;
+  background-position: center;
+  background-repeat: repeat;
+}
+
+.hand {
+  -webkit-filter: drop-shadow(5px 5px 5px #151515);
+  filter: drop-shadow(5px 5px 5px #151515);
+}
+
+.marquee {
+  font-family: "Helvetica", serif;
+}

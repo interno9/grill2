@@ -110,6 +110,9 @@ export function TagSuggestions(props) {
     generateAITags();
 
     // Match based on Google Place types
+    const suggestions = new Set();
+    const venueTypes = venueData.types || [];
+    
     venueTypes.forEach((type) => {
       const normalizedType = type.toLowerCase();
 

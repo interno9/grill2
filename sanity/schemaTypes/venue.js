@@ -88,23 +88,21 @@ export default {
       title: "venueData.name",
       subtitle: "venueData.address",
       customImages: "customImages",
-      photoUrls: "venueData.photoUrls",
     },
     prepare(selection) {
-      const { title, subtitle, customImages, photoUrls } = selection;
+      const { title, subtitle, customImages } = selection;
 
-      // Get first image from customImages or photoUrls
-      let imageUrl = null;
-      if (customImages && customImages.length > 0 && customImages[0].asset) {
-        imageUrl = customImages[0];
-      } else if (photoUrls && photoUrls.length > 0) {
-        imageUrl = photoUrls[0];
+      // Get first image from customImages only
+      // Note: photoUrls (external URLs) cannot be used as media in Sanity preview
+      let media = undefined;
+      if (customImages && customImages.length > 0 && customImages[0]?.asset) {
+        media = customImages[0];
       }
 
       return {
         title: title || "Unnamed Venue",
-        // subtitle: subtitle || "No address",
-        media: imageUrl,
+        subtitle: subtitle || "No address",
+        media: media,
       };
     },
   },
