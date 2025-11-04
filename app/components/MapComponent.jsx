@@ -5,7 +5,12 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { useState, useEffect, useMemo } from "react";
 import { useMap } from "react-leaflet";
 import MarkerComponent from "./MarkerComponent";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus, X, SlidersHorizontal } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 function ZoomControl() {
   const map = useMap();
@@ -32,13 +37,85 @@ function ZoomControl() {
   );
 }
 
-function ChangeView({ center, zoom }) {
+function InitialViewSetup({ startCoordinates, zoom }) {
   const map = useMap();
+  const [initialized, setInitialized] = useState(false);
+
   useEffect(() => {
-    if (center) {
-      map.setView(center, zoom);
+    if (startCoordinates && !initialized) {
+      // First set the view to initialize the map
+      map.setView(startCoordinates, zoom, { animate: false });
+
+      const isMobile = window.innerWidth < 768;
+
+      if (!isMobile) {
+        // On desktop, apply offset for the sidebar after a brief moment
+        requestAnimationFrame(() => {
+          const barWidth = 500;
+          const targetPoint = map.latLngToContainerPoint(startCoordinates);
+          targetPoint.x -= barWidth / 2;
+          const offsetLatLng = map.containerPointToLatLng(targetPoint);
+          map.setView([offsetLatLng.lat, offsetLatLng.lng], zoom, {
+            animate: false,
+          });
+        });
+      }
+
+      setInitialized(true);
     }
-  }, [center, zoom, map]);
+  }, [startCoordinates, zoom, initialized, map]);
+
+  return null;
+}
+
+function PanToActiveVenue({ venues, locationActive }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (locationActive != null) {
+      // Find the active venue
+      const activeVenue = venues.find((venue, index) => {
+        const venueId = venue._id || index;
+        return venueId === locationActive;
+      });
+
+      if (
+        activeVenue?.location?.lat != null &&
+        activeVenue?.location?.lng != null
+      ) {
+        const targetLatLng = [
+          activeVenue.location.lat,
+          activeVenue.location.lng,
+        ];
+
+        // Get map dimensions
+        const mapSize = map.getSize();
+        const isMobile = window.innerWidth < 768;
+
+        if (!isMobile) {
+          // On desktop, offset for the 500px bar on the left
+          const barWidth = 500;
+
+          // Convert the target point to container point, shift it left, then convert back
+          const targetPoint = map.latLngToContainerPoint(targetLatLng);
+          targetPoint.x -= barWidth / 2; // Shift left by half the bar width
+          const offsetLatLng = map.containerPointToLatLng(targetPoint);
+
+          map.setView(offsetLatLng, map.getZoom(), {
+            animate: true,
+            duration: 0.5,
+          });
+        } else {
+          // On mobile, just center normally
+          map.setView(targetLatLng, map.getZoom(), {
+            animate: true,
+            duration: 0.5,
+          });
+        }
+      }
+    }
+  }, [locationActive, venues, map]);
+
   return null;
 }
 
@@ -129,93 +206,119 @@ const MapApp = ({
 
   return (
     <div
-      className={`transition-all duration-150 ease-in-out w-full absolute ${showBar ? "h-[calc(100dvh-165px)] md:h-[100dvh]" : "h-[100dvh]"}`}
+      className={`transition-all duration-150 ease-in-out w-full absolute ${showBar ? "h-[calc(100dvh)] sm:h-[100dvh]" : "h-[100dvh]"}`}
     >
-      <nav className="absolute m-2 top-0 md:left-[calc(340px)] z-50 text-black backdrop-blur-md flex gap-2 p-2 shadow-md font-bold text-xs rounded-full">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          type="text"
-          placeholder="Search..."
-          className="top-0 w-32  font-bold border border-neutral-300 rounded-full ring-0 focus:ring-0 focus:outline-none"
-        />
+      <nav className="absolute m-4 bottom-0 sm:left-[calc(500px-1em)] z-50 rounded-full">
+        <Popover>
+          <PopoverTrigger asChild>
+            <SlidersHorizontal size={28} className="bg-white" />
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-4 bg-white" align="start">
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="text-xs font-semibold mb-1 block">
+                  Search
+                </label>
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  type="text"
+                  placeholder="Search venues..."
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg ring-0 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
 
-        <select
-          defaultValue=""
-          className="ring-0 border border-neutral-300 rounded-full w-28"
-          onChange={(e) => {
-            setStartCoordinates(positions[e.target.value]);
-          }}
-        >
-          <option value="" disabled>
-            Zone
-          </option>
-          {Object.keys(positions).map((cityKey) => (
-            <option key={cityKey} value={cityKey}>
-              {cityKey.charAt(0).toUpperCase() + cityKey.slice(1)}
-            </option>
-          ))}
-        </select>
+              <div>
+                <label className="text-xs font-semibold mb-1 block">Zone</label>
+                <select
+                  defaultValue=""
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  onChange={(e) => {
+                    setStartCoordinates(positions[e.target.value]);
+                  }}
+                >
+                  <option value="" disabled>
+                    Select zone
+                  </option>
+                  {Object.keys(positions).map((cityKey) => (
+                    <option key={cityKey} value={cityKey}>
+                      {cityKey.charAt(0).toUpperCase() + cityKey.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <select
-          value={categoryActive || ""}
-          className="ring-0 border border-neutral-300 rounded-full w-28"
-          onChange={(e) => {
-            setCategoryActive(e.target.value);
-          }}
-        >
-          <option value="" disabled>
-            Category
-          </option>
-          <option value="all">All</option>
-          {uniqueTags.map((tag) => (
-            <option key={tag} value={tag} className="capitalize">
-              {tag.charAt(0).toUpperCase() + tag.slice(1)}
-            </option>
-          ))}
-        </select>
+              <div>
+                <label className="text-xs font-semibold mb-1 block">
+                  Category
+                </label>
+                <select
+                  value={categoryActive || ""}
+                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  onChange={(e) => {
+                    setCategoryActive(e.target.value);
+                  }}
+                >
+                  <option value="" disabled>
+                    Select category
+                  </option>
+                  <option value="all">All</option>
+                  {uniqueTags.map((tag) => (
+                    <option key={tag} value={tag} className="capitalize">
+                      {tag.charAt(0).toUpperCase() + tag.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <button
-          onClick={() => setOpenNowFilter(!openNowFilter)}
-          className={`px-3 py-2 rounded-full transition-all border border-neutral-300 ${
-            openNowFilter
-              ? "bg-green-500 text-white border-green-500"
-              : "bg-white text-black hover:bg-gray-100"
-          }`}
-        >
-          Open now
-        </button>
+              <div>
+                <button
+                  onClick={() => setOpenNowFilter(!openNowFilter)}
+                  className={`w-full px-3 py-2 text-sm rounded-lg transition-all font-semibold ${
+                    openNowFilter
+                      ? "bg-green-500 text-white hover:bg-green-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {openNowFilter ? "✓ Open now" : "Open now"}
+                </button>
+              </div>
 
-        {(search || categoryActive || openNowFilter) && (
-          <button
-            onClick={() => {
-              setSearch("");
-              setCategoryActive(null);
-              setOpenNowFilter(false);
-            }}
-            className="bg-[#c52627] text-white font-bold w-6 h-6 rounded-full flex items-center justify-center"
-          >
-            <X size={16} />
-          </button>
-        )}
+              {(search || categoryActive || openNowFilter) && (
+                <button
+                  onClick={() => {
+                    setSearch("");
+                    setCategoryActive(null);
+                    setOpenNowFilter(false);
+                  }}
+                  className="w-full bg-red-500 text-white font-semibold px-3 py-2 text-sm rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <X size={16} />
+                  Clear filters
+                </button>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
       </nav>
 
       <MapContainer
-        className="absolute w-full md:w-[calc(100vw-340px)] top-0 right-0 z-0"
+        className="absolute w-full top-0 right-0 z-0"
         style={{
           height: "100%",
           zIndex: 0,
         }}
         center={startCoordinates}
         zoom={zoom}
-        scrollWheelZoom={false}
-        doubleClickZoom={false}
-        touchZoom={false}
-        zoomControl={false}
+        scrollWheelZoom={true}
+        doubleClickZoom={true}
+        touchZoom={true}
+        zoomControl={true}
         dragging={true}
       >
-        <ChangeView center={startCoordinates} zoom={zoom} />
+        <InitialViewSetup startCoordinates={startCoordinates} zoom={zoom} />
         <ResizeMap showBar={showBar} />
+        <PanToActiveVenue venues={venues} locationActive={locationActive} />
         <ZoomControl />
 
         {!satelliteMode && (

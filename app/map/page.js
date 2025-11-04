@@ -224,7 +224,7 @@ export default function MapPage() {
         <a href="/">
           <img
             src="/assets/imgs/logo.webp"
-            className="absolute top-2 transition-all hover:opacity-75 right-2 z-50 w-28 md:w-64 cursor-pointer"
+            className="absolute top-4 transition-all hover:opacity-75 right-2 z-50 w-28 sm:w-64 cursor-pointer"
           />
         </a>
 
@@ -243,20 +243,9 @@ export default function MapPage() {
           setOpenNowFilter={setOpenNowFilter}
         />
 
-        {/* Toggle button on mobile */}
-        <div
-          onClick={() => setShowBar(!showBar)}
-          className="z-20 absolute right-1/2 translate-x-1/2 px-2 py-1 bg-white rounded-t-3xl md:hidden transition-all duration-150 ease-in-out cursor-pointer"
-          style={{ bottom: showBar ? "208px" : "0px" }}
-        >
-          {showBar ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-        </div>
-
         {/* Sidebar / bottom bar */}
         <div
-          className={`bg-white absolute z-20 gap-2 shadow-md p-2 bottom-0 md:left-0 md:relative flex md:flex-col md:w-[340px] md:max-h-[100dvh] overflow-x-scroll w-full items-start md:overflow-y-scroll ${
-            showBar ? "" : "hidden md:flex"
-          }`}
+          className={`w-full sm:w-[500px] absolute z-20 gap-4 p-4 bottom-0 left-0 flex flex-col max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
         >
           <Bar
             venues={filteredVenues}

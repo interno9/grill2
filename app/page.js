@@ -29,14 +29,14 @@ export default function Page() {
           >
             <img
               src="/assets/imgs/hand1.png"
-              className="w-12 md:w-28 hand saturate-150 rounded-3xl rotate-12 hover:-rotate-0 hover:scale-105 transition-all"
+              className="w-12 sm:w-28 hand saturate-150 rounded-3xl rotate-12 hover:-rotate-0 hover:scale-105 transition-all"
             />
           </a>
         </div>
 
         <span
           id="map"
-          className="p-12 md:p-32 pattern h-screen flex items-center justify-center"
+          className="p-12 sm:p-32 pattern h-screen flex items-center justify-center"
         >
           <Link href="/map">
             <img
@@ -48,7 +48,7 @@ export default function Page() {
 
         <img
           src="/assets/imgs/logo.webp"
-          className="absolute top-2 right-2 w-28 md:w-64"
+          className="absolute top-2 right-2 w-28 sm:w-64"
         />
         <Marquee
           pauseOnHover

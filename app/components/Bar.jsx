@@ -1,4 +1,7 @@
 import { useEffect } from "react";
+import Swiper from "swiper";
+import Swiperino from "./Swiperino";
+import { Globe, Instagram, InstagramIcon, Phone } from "lucide-react";
 
 export default function Bar({ venues, setLocationActive, locationActive }) {
   useEffect(() => {
@@ -11,11 +14,30 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         );
         const isLastVenue = venueIndex === venues.length - 1;
 
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: isLastVenue ? "end" : "center",
-          inline: "nearest",
-        });
+        // Find the scrollable parent container
+        const scrollContainer = el.closest(".overflow-y-scroll");
+
+        if (scrollContainer) {
+          if (isLastVenue) {
+            el.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+              inline: "nearest",
+            });
+          } else {
+            // Scroll container with 16px offset from top
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const elementRect = el.getBoundingClientRect();
+            const relativeTop = elementRect.top - containerRect.top;
+            const targetScrollTop =
+              scrollContainer.scrollTop + relativeTop - 16;
+
+            scrollContainer.scrollTo({
+              top: targetScrollTop,
+              behavior: "smooth",
+            });
+          }
+        }
       }
     }
   }, [locationActive, venues]);
@@ -25,12 +47,6 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
 
     const radomColor = () => {
       const colors = [
-        // "bg-red-400",
-        // "bg-blue-400",
-        // "bg-green-400",
-        // "bg-yellow-400",
-        // "bg-purple-400",
-        // "bg-pink-400",
         "bg-[#d3235b]",
         "bg-[#241757]",
         "bg-[#e6b66a]",
@@ -40,6 +56,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         "bg-[#ff7e20]",
         "bg-[#85b7df]",
       ];
+      return null;
       return colors[Math.floor(Math.random() * colors.length)];
     };
 
@@ -50,24 +67,79 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`${radomColor()} text-black flex-shrink-0 w-44 md:w-full rounded-xl transition-all text-left duration-200 group p-2 
-          ${isActive ? `${radomColor()} text-white` : ""}`}
+        className={`w-full shadow-lg ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
+          ${isActive ? `${radomColor()}` : ""}`}
       >
-        <h1 className="font-semibold text-center p-0.5 tracking-tight text-white text-xs">
-          {venue.title}
-        </h1>
         <div
-          className={`overflow-hidden transition-all duration-200 rounded-b-xl
-            ${isActive ? "m-4 rounded-xl" : "md:group-hover:m-2 md:group-hover:rounded-xl"}
+          className={`p-4 overflow-hidden transition-all duration-200
+            ${isActive ? "bg-[#c1282e] text-white" : ""}
           `}
         >
-          <img
-            src={venue.imageUrls?.[0]}
-            alt={venue.title}
-            className={`w-full aspect-square object-cover transition-transform duration-200
-              ${isActive ? "scale-110 rotate-6" : "md:group-hover:scale-110 md:group-hover:rotate-6"}
-            `}
-          />
+          <div className="relative">
+            <Swiperino
+              imgs={venue.imageUrls}
+              slidesPerView={1}
+              pagination={{ clickable: true }}
+            />
+
+            <div className="absolute z-50 top-0 right-2 flex gap-1 text-[10px] mt-2">
+              {console.log(venue)}
+
+              {venue.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`font-bold px-2 outline bg-[#c1282e] text-white outline-[0] rounded-full capitalize`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          <h1 className="my-2 tracking-tight text-4xl sm:text-5xl font-semibold">
+            {venue.title}
+          </h1>
+
+          <div className="">
+            <hr />
+            <p className="leading-5 my-2">
+              {venue.description ||
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud."}
+            </p>
+
+            <br />
+
+            <div className="flex items-center gap-4 text-xs">
+              {venue.instagram && (
+                <a
+                  href={"https://www.instagram.com/" + venue.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <InstagramIcon size={18} strokeWidth={2} />
+                </a>
+              )}
+
+              {venue.website && (
+                <a
+                  href={venue.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Globe size={18} strokeWidth={2} />
+                </a>
+              )}
+
+              {venue.phone && (
+                <a
+                  href={`tel:${venue.phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Phone size={18} strokeWidth={2} />
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       </button>
     );

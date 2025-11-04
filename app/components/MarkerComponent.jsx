@@ -2,7 +2,7 @@ import { Marker, Popup } from "react-leaflet";
 import { useEffect, useRef, useState } from "react"; // Added useState import
 import { Icon } from "leaflet";
 import Swiperino from "./Swiperino";
-import { Globe, Instagram, Phone, GlobeIcon } from "lucide-react";
+import { Globe, Instagram, Phone, GlobeIcon, Map } from "lucide-react";
 
 const MarkerComponent = ({
   id,
@@ -159,7 +159,11 @@ const MarkerComponent = ({
       ? "/assets/icons/fullySticker.webp"
       : "/assets/icons/positionIcon.svg";
 
-  const normalIcon = new Icon({ iconUrl, iconSize: [40, 40] });
+  const iconSize = isActive ? [40, 40] : [30, 30];
+  const normalIcon = new Icon({
+    iconUrl,
+    iconSize,
+  });
 
   return (
     <>
@@ -168,9 +172,10 @@ const MarkerComponent = ({
         icon={normalIcon}
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
-        className="hover:scale-110 transition-transform duration-150 ease-in-out"
+        className={isActive ? "marker-blink" : ""}
+        opacity={isActive ? 1 : 0.8}
       >
-        <Popup>
+        {/* <Popup>
           <div className="w-[300px] shadow-md rounded-xl p-2">
             <h1 className="font-bold tracking-tight text-center mb-2">
               {venue.title}
@@ -182,7 +187,7 @@ const MarkerComponent = ({
                 {venue.description}
               </div>
             )}
-            <div className="flex gap-2 justify-start py-2">
+            <div className="flex gap-2 justify-evenly py-2">
               {venue.phone && (
                 <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                   <a
@@ -197,20 +202,17 @@ const MarkerComponent = ({
                 </button>
               )}
 
-              {/* <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
+              <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
                 <a
                   style={{
                     color: "white",
                   }}
-                  href={
-                    venue.googleMap ||
-                    `https://www.google.com/maps/search/?api=1&query=${position.lat},${position.lng}`
-                  }
+                  href={venue.googleMap}
                   target="_blank"
                 >
                   <Map size={14} />
                 </a>
-              </button> */}
+              </button>
 
               {venue.instagram && (
                 <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
@@ -240,23 +242,9 @@ const MarkerComponent = ({
                 </button>
               )}
 
-              {/* <button className="bg-[#c52627] text-white w-[30px] h-[30px] rounded-full hover:opacity-50 transition-all">
-                <a
-                  style={{
-                    color: "white",
-                  }}
-                  target="_blank"
-                  href={`https://divoora.ch/it/restaurants`}
-                >
-                  <img
-                    src="/assets/icons/divoora.png"
-                    className="rounded-full"
-                  />
-                </a>
-              </button> */}
+              
             </div>
 
-            {/* Opening Hours */}
             {venue.schedule && venue.schedule.length > 0 && (
               <div className="border-t border-gray-200 mt-4 pt-4">
                 <h2 className="font-bold text-xs mb-2">Opening Hours</h2>
@@ -270,7 +258,7 @@ const MarkerComponent = ({
               </div>
             )}
           </div>
-        </Popup>
+        </Popup> */}
       </Marker>
 
       {/* User Location Marker */}

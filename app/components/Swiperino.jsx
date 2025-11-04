@@ -5,6 +5,7 @@ import "swiper/css";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Image from "next/image";
 
 export default function Swiperino({ imgs, videos, slidesPerView }) {
   return (
@@ -17,7 +18,7 @@ export default function Swiperino({ imgs, videos, slidesPerView }) {
       scrollbar={{ draggable: true }}
       // onSlideChange={() => console.log("slide change")}
       autoHeight={true}
-      spaceBetween={0}
+      spaceBetween={8}
       slidesPerView={slidesPerView || 1}
     >
       {videos &&
@@ -41,8 +42,12 @@ export default function Swiperino({ imgs, videos, slidesPerView }) {
       {imgs.map((img, i) => {
         return (
           <SwiperSlide key={i}>
-            <img
-              className="w-full object-cover aspect-square"
+            <Image
+              width={300}
+              height={300}
+              quality={80}
+              blurDataURL={`${img}?w=1&h=1&auto=format&fit=crop&q=1`}
+              className="w-full blur-0 object-cover aspect-[3/2.3]"
               alt={img}
               src={img}
             />
