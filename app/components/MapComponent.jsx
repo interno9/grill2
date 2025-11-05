@@ -208,7 +208,7 @@ const MapApp = ({
     <div
       className={`transition-all duration-150 ease-in-out w-full absolute ${showBar ? "h-[calc(100dvh)] sm:h-[100dvh]" : "h-[100dvh]"}`}
     >
-      <nav className="absolute m-4 bottom-0 sm:left-[calc(500px-1em)] z-50 rounded-full">
+      <nav className="hidden absolute m-4 bottom-0 sm:left-[calc(500px-1em)] z-50 rounded-full">
         <Popover>
           <PopoverTrigger asChild>
             <SlidersHorizontal size={28} className="bg-white" />
@@ -310,9 +310,9 @@ const MapApp = ({
         }}
         center={startCoordinates}
         zoom={zoom}
-        scrollWheelZoom={true}
-        doubleClickZoom={true}
-        touchZoom={true}
+        scrollWheelZoom={false}
+        doubleClickZoom={false}
+        touchZoom={false}
         zoomControl={true}
         dragging={true}
       >

@@ -25,12 +25,15 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
               inline: "nearest",
             });
           } else {
-            // Scroll container with 16px offset from top
+            // Scroll container with 16px offset from top on desktop only
+            const isMobile = window.innerWidth < 640;
+            const offset = isMobile ? 0 : 16;
+
             const containerRect = scrollContainer.getBoundingClientRect();
             const elementRect = el.getBoundingClientRect();
             const relativeTop = elementRect.top - containerRect.top;
             const targetScrollTop =
-              scrollContainer.scrollTop + relativeTop - 16;
+              scrollContainer.scrollTop + relativeTop - offset;
 
             scrollContainer.scrollTo({
               top: targetScrollTop,
@@ -67,7 +70,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`w-full shadow-lg ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
+        className={`w-full sm:shadow-lg ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
           ${isActive ? `${radomColor()}` : ""}`}
       >
         <div

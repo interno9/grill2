@@ -224,7 +224,7 @@ export default function MapPage() {
         <a href="/">
           <img
             src="/assets/imgs/logo.webp"
-            className="absolute top-4 transition-all hover:opacity-75 right-2 z-50 w-28 sm:w-64 cursor-pointer"
+            className="absolute top-4 transition-all hover:opacity-75 right-2 z-50 w-28 sm:w-40 cursor-pointer"
           />
         </a>
 
@@ -245,7 +245,7 @@ export default function MapPage() {
 
         {/* Sidebar / bottom bar */}
         <div
-          className={`w-full sm:w-[500px] absolute z-20 gap-4 p-4 bottom-0 left-0 flex flex-col max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
+          className={`w-full sm:w-[500px] bg-white sm:bg-transparent absolute z-20 gap-4 sm:p-4 bottom-0 left-0 flex flex-col max-h-[60vh] sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
         >
           <Bar
             venues={filteredVenues}

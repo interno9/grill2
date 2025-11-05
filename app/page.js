@@ -2,11 +2,21 @@
 
 import Marquee from "react-fast-marquee";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Page() {
+  useEffect(() => {
+    // redirect to /map
+    document.location.href = "/map";
+  }, []);
   return (
     <div>
-      <div className="flex flex-col overflow-scroll h-[100dvh] scroll-smooth">
+      <div
+        style={{
+          display: "none",
+        }}
+        className="flex flex-col overflow-scroll h-[100dvh] scroll-smooth"
+      >
         <div className="relative">
           <video
             autoPlay
