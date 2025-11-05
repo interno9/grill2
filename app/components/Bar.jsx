@@ -85,7 +85,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
               pagination={{ clickable: true }}
             />
 
-            <div className="absolute z-50 top-0 right-2 flex gap-1 text-[10px] mt-2">
+            <div className="absolute z-50 top-2 right-2 flex gap-1 text-[10px]">
               {console.log(venue)}
 
               {venue.tags.map((tag) => (
