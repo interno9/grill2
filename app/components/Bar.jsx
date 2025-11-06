@@ -70,7 +70,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`w-full sm:shadow-lg ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
+        className={`pb-12 sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
           ${isActive ? `${radomColor()}` : ""}`}
       >
         <div
@@ -104,14 +104,12 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
 
           <div className="">
             <hr />
-            <p className="leading-5 my-2">
+            <p className="mt-2 text-xs leading-4 tracking-tight">
               {venue.description ||
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud."}
             </p>
 
-            <br />
-
-            <div className="flex items-center gap-4 text-xs">
+            <div className="mt-4 flex items-center gap-4 text-xs">
               {venue.instagram && (
                 <a
                   href={"https://www.instagram.com/" + venue.instagram}
