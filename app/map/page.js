@@ -234,10 +234,10 @@ export default function MapPage() {
       if (isMobile) return;
 
       // Find the bar's scroll container
-      const barContainer = document.querySelector('.overflow-y-scroll');
-      
+      const barContainer = document.querySelector(".overflow-y-scroll");
+
       // Don't intercept if user is already scrolling within the bar itself
-      if (barContainer && !e.target.closest('.overflow-y-scroll')) {
+      if (barContainer && !e.target.closest(".overflow-y-scroll")) {
         e.preventDefault();
         e.stopPropagation();
         barContainer.scrollTop += e.deltaY;
@@ -245,10 +245,10 @@ export default function MapPage() {
     };
 
     // Add listener to the entire window/document
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    
+    window.addEventListener("wheel", handleWheel, { passive: false });
+
     return () => {
-      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, []);
 
