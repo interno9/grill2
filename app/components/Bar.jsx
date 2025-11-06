@@ -70,7 +70,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={` pb-12 sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
+        className={`sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
           ${isActive ? `${radomColor()}` : ""}`}
       >
         <div
@@ -86,8 +86,6 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
             />
 
             <div className="absolute z-50 top-2 right-2 flex gap-1 text-[10px]">
-              {console.log(venue)}
-
               {venue.tags.map((tag) => (
                 <span
                   key={tag}

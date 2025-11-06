@@ -160,6 +160,12 @@ const MarkerComponent = ({
       : "/assets/icons/positionIcon.svg";
 
   const iconSize = isActive ? [40, 40] : [30, 30];
+
+  const activeIcon = new Icon({
+    iconUrl: "/assets/icons/positionIconActive.svg",
+    iconSize,
+  });
+
   const normalIcon = new Icon({
     iconUrl,
     iconSize,
@@ -169,11 +175,11 @@ const MarkerComponent = ({
     <>
       <Marker
         position={position}
-        icon={normalIcon}
+        icon={isActive ? activeIcon : normalIcon}
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
-        className={isActive ? "marker-blink" : ""}
-        opacity={isActive ? 1 : 0.8}
+        className={isActive ? "marker-active" : ""}
+        // opacity={isActive ? 1 : 0.5}
       >
         {/* <Popup>
           <div className="w-[300px] shadow-md rounded-xl p-2">

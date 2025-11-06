@@ -88,8 +88,6 @@ function PanToActiveVenue({ venues, locationActive }) {
           activeVenue.location.lng,
         ];
 
-        // Get map dimensions
-        const mapSize = map.getSize();
         const isMobile = window.innerWidth < 640;
 
         if (!isMobile) {
@@ -106,8 +104,18 @@ function PanToActiveVenue({ venues, locationActive }) {
             duration: 0.5,
           });
         } else {
-          // On mobile, just center normally
-          map.setView(targetLatLng, map.getZoom(), {
+          // On mobile, center marker in the top 20dvh visible area
+          // Bar takes 80dvh from bottom, leaving 20dvh visible at top
+          const viewportHeight = window.innerHeight;
+          
+          const targetPoint = map.latLngToContainerPoint(targetLatLng);
+          // We want marker at 10dvh from top (center of visible 20dvh)
+          // Current marker is at center (50dvh), need to shift map so it appears at 10dvh
+          // Shift down by 40dvh (50dvh - 10dvh)
+          targetPoint.y += viewportHeight * 0.4;
+          const offsetLatLng = map.containerPointToLatLng(targetPoint);
+
+          map.setView(offsetLatLng, map.getZoom(), {
             animate: true,
             duration: 0.5,
           });
