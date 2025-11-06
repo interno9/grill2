@@ -323,8 +323,9 @@ const MapApp = ({
         scrollWheelZoom={false}
         doubleClickZoom={false}
         touchZoom={false}
-        zoomControl={true}
+        zoomControl={false}
         dragging={true}
+        keyboard={false}
       >
         <InitialViewSetup startCoordinates={startCoordinates} zoom={zoom} />
         <ResizeMap showBar={showBar} />

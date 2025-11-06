@@ -226,6 +226,32 @@ export default function MapPage() {
     }
   }, [locationActive]);
 
+  // Handle wheel events anywhere on the page to scroll the bar instead (desktop only)
+  useEffect(() => {
+    const handleWheel = (e) => {
+      // Only apply on screens >= sm (640px)
+      const isMobile = window.innerWidth < 640;
+      if (isMobile) return;
+
+      // Find the bar's scroll container
+      const barContainer = document.querySelector('.overflow-y-scroll');
+      
+      // Don't intercept if user is already scrolling within the bar itself
+      if (barContainer && !e.target.closest('.overflow-y-scroll')) {
+        e.preventDefault();
+        e.stopPropagation();
+        barContainer.scrollTop += e.deltaY;
+      }
+    };
+
+    // Add listener to the entire window/document
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   return (
     <div className="overflow-hidden h-[100dvh]">
       <div className="relative flex w-full h-full">
@@ -254,18 +280,18 @@ export default function MapPage() {
 
         {/* Sidebar / bottom bar */}
 
-        <div className="fixed z-50 bottom-0 left-0 w-full sm:w-[450px]">
+        <div className="fixed z-50 bottom-0 left-0 w-full sm:w-[450px] pointer-events-none">
           <button
             onClick={() => {
               setOpenBar((prevOpenBar) => !prevOpenBar);
             }}
-            className="z-1 absolute -top-[26px] left-1/2 -translate-x-1/2 bg-white rounded-t-full px-2 py-1"
+            className="z-1 absolute -top-[26px] left-1/2 -translate-x-1/2 bg-white rounded-t-full px-2 py-1 pointer-events-auto"
           >
             {openBar ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
           </button>
 
           <div
-            className={`outline sm:outline-none outline-white z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
+            className={`outline sm:outline-none outline-white z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll pointer-events-auto`}
           >
             <Bar
               venues={filteredVenues}
