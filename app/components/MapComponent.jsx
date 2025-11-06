@@ -1,7 +1,7 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import { useState, useEffect, useMemo } from "react";
 import { useMap } from "react-leaflet";
 import MarkerComponent from "./MarkerComponent";
@@ -90,11 +90,11 @@ function PanToActiveVenue({ venues, locationActive }) {
 
         // Get map dimensions
         const mapSize = map.getSize();
-        const isMobile = window.innerWidth < 768;
+        const isMobile = window.innerWidth < 640;
 
         if (!isMobile) {
-          // On desktop, offset for the 500px bar on the left
-          const barWidth = 500;
+          // On desktop, offset for the 450px bar on the left
+          const barWidth = 450;
 
           // Convert the target point to container point, shift it left, then convert back
           const targetPoint = map.latLngToContainerPoint(targetLatLng);
@@ -131,6 +131,15 @@ function ResizeMap({ showBar }) {
   return null;
 }
 
+function MapClickHandler({ setOpenBar }) {
+  useMapEvents({
+    click: () => {
+      setOpenBar(false);
+    },
+  });
+  return null;
+}
+
 const MapApp = ({
   venues,
   allVenues,
@@ -144,6 +153,7 @@ const MapApp = ({
   setSearch,
   openNowFilter,
   setOpenNowFilter,
+  setOpenBar,
 }) => {
   const zoom = 15;
 
@@ -208,7 +218,7 @@ const MapApp = ({
     <div
       className={`transition-all duration-150 ease-in-out w-full absolute ${showBar ? "h-[calc(100dvh)] sm:h-[100dvh]" : "h-[100dvh]"}`}
     >
-      <nav className="hidden absolute m-4 bottom-0 sm:left-[calc(500px-1em)] z-50 rounded-full">
+      <nav className="hidden absolute m-4 bottom-0 sm:left-[calc(450px-1em)] z-50 rounded-full">
         <Popover>
           <PopoverTrigger asChild>
             <SlidersHorizontal size={28} className="bg-white" />
@@ -320,6 +330,7 @@ const MapApp = ({
         <ResizeMap showBar={showBar} />
         <PanToActiveVenue venues={venues} locationActive={locationActive} />
         <ZoomControl />
+        <MapClickHandler setOpenBar={setOpenBar} />
 
         {!satelliteMode && (
           <TileLayer

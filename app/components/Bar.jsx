@@ -75,7 +75,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
       >
         <div
           className={`p-4 overflow-hidden transition-all duration-200
-            ${isActive ? "bg-[#c1282e] text-white" : ""}
+            ${isActive ? "sm:bg-[#c1282e] sm:text-white" : ""}
           `}
         >
           <div className="relative">

@@ -7,6 +7,7 @@ import Bar from "../components/Bar";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function MapPage() {
+  const [openBar, setOpenBar] = useState(false);
   const [venues, setVenues] = useState([]);
   const [cities, setCities] = useState([]);
   const [locationActive, setLocationActive] = useState(null);
@@ -218,6 +219,13 @@ export default function MapPage() {
     }
   }, [search, venues]);
 
+  // Auto-open bar when a marker is clicked
+  useEffect(() => {
+    if (locationActive) {
+      setOpenBar(false);
+    }
+  }, [locationActive]);
+
   return (
     <div className="overflow-hidden h-[100dvh]">
       <div className="relative flex w-full h-full">
@@ -241,21 +249,34 @@ export default function MapPage() {
           setSearch={setSearch}
           openNowFilter={openNowFilter}
           setOpenNowFilter={setOpenNowFilter}
+          setOpenBar={setOpenBar}
         />
 
         {/* Sidebar / bottom bar */}
-        <div
-          className={`w-full sm:w-[500px] bg-white sm:bg-transparent absolute z-20 gap-4 sm:p-4 bottom-0 left-0 flex flex-col max-h-[60vh] sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
-        >
-          <Bar
-            venues={filteredVenues}
-            locationActive={locationActive}
-            setLocationActive={setLocationActive}
-            setCategoryActive={setCategoryActive}
-            categoryActive={categoryActive}
-            search={search}
-            setSearch={setSearch}
-          />
+
+        <div className="fixed z-50 bottom-0 left-0 w-full sm:w-[450px]">
+          <button
+            onClick={() => {
+              setOpenBar((prevOpenBar) => !prevOpenBar);
+            }}
+            className="z-1 absolute -top-[26px] left-1/2 -translate-x-1/2 bg-white rounded-t-full px-2 py-1"
+          >
+            {openBar ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+
+          <div
+            className={`z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
+          >
+            <Bar
+              venues={filteredVenues}
+              locationActive={locationActive}
+              setLocationActive={setLocationActive}
+              setCategoryActive={setCategoryActive}
+              categoryActive={categoryActive}
+              search={search}
+              setSearch={setSearch}
+            />
+          </div>
         </div>
       </div>
     </div>
