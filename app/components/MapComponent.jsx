@@ -107,7 +107,7 @@ function PanToActiveVenue({ venues, locationActive }) {
           // On mobile, center marker in the top 20dvh visible area
           // Bar takes 80dvh from bottom, leaving 20dvh visible at top
           const viewportHeight = window.innerHeight;
-          
+
           const targetPoint = map.latLngToContainerPoint(targetLatLng);
           // We want marker at 10dvh from top (center of visible 20dvh)
           // Current marker is at center (50dvh), need to shift map so it appears at 10dvh
