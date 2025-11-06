@@ -265,7 +265,7 @@ export default function MapPage() {
           </button>
 
           <div
-            className={`z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
+            className={`outline sm:outline-none outline-white z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll`}
           >
             <Bar
               venues={filteredVenues}

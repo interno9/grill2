@@ -70,7 +70,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`pb-12 sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
+        className={` pb-12 sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
           ${isActive ? `${radomColor()}` : ""}`}
       >
         <div
