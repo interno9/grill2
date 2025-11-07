@@ -175,7 +175,7 @@ const MarkerComponent = ({
     <>
       <Marker
         position={position}
-        icon={isActive ? activeIcon : normalIcon}
+        icon={isActive ? normalIcon : normalIcon}
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
         className={isActive ? "marker-active" : ""}

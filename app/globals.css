@@ -119,6 +119,6 @@ img {
     transform: scale(0.85);
   }
   50% {
-    transform: scale(1.15);
+    transform: scale(1.25);
   }
 }
