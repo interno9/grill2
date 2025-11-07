@@ -255,12 +255,12 @@ export default function MapPage() {
   return (
     <div className="overflow-hidden h-[100dvh]">
       <div className="relative flex w-full h-full">
-        <a href="/" className="pointer-events-none">
+        {/* <a href="/" className="pointer-events-none">
           <img
             src="/assets/imgs/logo.webp"
             className="absolute top-4 transition-all hover:opacity-75 right-2 z-50 w-28 sm:w-40 cursor-pointer"
           />
-        </a>
+        </a> */}
 
         <Map
           venues={filteredVenues}
