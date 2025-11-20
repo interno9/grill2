@@ -185,7 +185,9 @@ const MapApp = ({
   const [darkMode, setDarkMode] = useState(false);
   const [noLabels, setNoLabels] = useState(false);
   const [satelliteMode, setSatelliteMode] = useState(false);
-  const [startCoordinates, setStartCoordinates] = useState([48.862818, 2.364706]);
+  const [startCoordinates, setStartCoordinates] = useState([
+    48.862818, 2.364706,
+  ]);
 
   // Set initial coordinates to user's current position
   /*
