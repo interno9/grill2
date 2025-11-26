@@ -144,7 +144,7 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
             ${isActive ? "sm:bg-[#c1282e] sm:text-white" : ""}
           `}
         >
-          <div className="relative">
+          <div className="relative border border-neutral-100">
             <Swiperino
               imgs={venue.imageUrls}
               slidesPerView={1}
