@@ -47,6 +47,15 @@ nav {
   background: rgb(255, 255, 255) !important;
 }
 
+.blink {
+  animation: blink 1.2s 3;
+}
+
+@keyframes blink {
+  0%, 16.66%, 33.33%, 50%, 66.66%, 83.33% { opacity: 1; }
+  8.33%, 25%, 41.66%, 58.33%, 75%, 91.66% { opacity: 0.6; }
+}
+
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   box-shadow: none !important;

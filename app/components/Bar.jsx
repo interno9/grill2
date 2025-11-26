@@ -1,9 +1,75 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Swiper from "swiper";
 import Swiperino from "./Swiperino";
-import { Globe, Instagram, InstagramIcon, Phone } from "lucide-react";
+import {
+  Globe,
+  Instagram,
+  InstagramIcon,
+  Phone,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  Dot,
+} from "lucide-react";
 
 export default function Bar({ venues, setLocationActive, locationActive }) {
+  const [hoursExpanded, setHoursExpanded] = useState({});
+
+  // Check if venue is open now
+  const isOpenNow = (venue) => {
+    if (!venue.schedule || venue.schedule.length === 0) return false;
+
+    const now = new Date();
+    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    const parseTime = (timeStr) => {
+      const [time, period] = timeStr.trim().split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+      return hours * 60 + (minutes || 0);
+    };
+
+    for (const entry of venue.schedule) {
+      const match = entry.match(/^([^:]+):\s*(.+)$/);
+      if (match && match[1] === currentDay) {
+        const timeStr = match[2];
+        if (timeStr.toLowerCase().includes("closed")) return false;
+        const times = timeStr.split(" – ");
+        if (times.length === 2) {
+          const openMin = parseTime(times[0]);
+          const closeMin = parseTime(times[1]);
+          return currentTime >= openMin && currentTime <= closeMin;
+        }
+      }
+    }
+    return false;
+  };
+  const dayMap = {
+    monday: "Mo",
+    tuesday: "Tu",
+    wednesday: "We",
+    thursday: "Th",
+    friday: "Fr",
+    saturday: "Sa",
+    sunday: "Su",
+  };
+
+  const dayOrder = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+
+  const compactHours = (hours) => {
+    // Return hours as is, assuming Google API provides all days
+    return hours || [];
+  };
   useEffect(() => {
     if (locationActive != null) {
       const el = document.getElementById(`${locationActive}`);
@@ -104,8 +170,56 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
             <hr />
             <p className="mt-2 text-xs leading-4 tracking-tight">
               {venue.description ||
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud."}
+                "A cozy Parisian restaurant with a great atmosphere and delicious food. The perfect spot for a romantic dinner or a night out with friends. Come and experience the charm of Paris right here!"}
             </p>
+
+            {venue.schedule && venue.schedule.length > 0 && (
+              <div className="mt-4 font-bold ">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHoursExpanded((prev) => ({
+                      ...prev,
+                      [venueId]: !prev[venueId],
+                    }));
+                  }}
+                  className={`flex items-center gap-1 text-xs mb-1 hover:text-gray-600 ${isOpenNow(venue) ? "blink" : ""}`}
+                >
+                  Opening Hours
+                  {hoursExpanded[venueId] ? (
+                    <ChevronUp size={12} />
+                  ) : (
+                    <ChevronDown size={12} />
+                  )}
+                </button>
+                {hoursExpanded[venueId] && (
+                  <div className="text-xs">
+                    {compactHours(venue.schedule).map((hour, index) => {
+                      const [day, time] = hour.split(": ");
+                      const currentDay = new Date().toLocaleDateString(
+                        "en-US",
+                        { weekday: "long" }
+                      );
+                      return (
+                        <div key={index} className="flex items-center">
+                          <span className={"flex gap-2 items-center"}>
+                            {day === currentDay && (
+                              <Dot size={14} className="animate-pulse" />
+                            )}
+                            {day}
+                          </span>
+                          <div
+                            className="flex-1 mx-2"
+                            style={{ borderBottom: "1px dotted #dedede" }}
+                          ></div>
+                          <span>{time}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="mt-4 flex items-center gap-4 text-xs">
               {venue.instagram && (

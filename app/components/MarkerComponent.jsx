@@ -12,14 +12,39 @@ const MarkerComponent = ({
   venue,
 }) => {
   const markerRef = useRef(null);
-  const [userLocation, setUserLocation] = useState(null); // Moved useState here
+  const [userLocation, setUserLocation] = useState(null);
 
-  // Open popup when active flag changes
-  useEffect(() => {
-    if (isActive && markerRef.current) {
-      markerRef.current.openPopup();
+  // Get current time and check if venue is open
+  const isOpenNow = () => {
+    if (!venue.schedule || venue.schedule.length === 0) return true; // Assume open if no schedule
+
+    const now = new Date();
+    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    const parseTime = (timeStr) => {
+      const [time, period] = timeStr.trim().split(' ');
+      let [hours, minutes] = time.split(':').map(Number);
+      if (period === 'PM' && hours !== 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+      return hours * 60 + (minutes || 0);
+    };
+
+    for (const entry of venue.schedule) {
+      const match = entry.match(/^([^:]+):\s*(.+)$/);
+      if (match && match[1] === currentDay) {
+        const timeStr = match[2];
+        if (timeStr.toLowerCase().includes('closed')) return false;
+        const times = timeStr.split(' – ');
+        if (times.length === 2) {
+          const openMin = parseTime(times[0]);
+          const closeMin = parseTime(times[1]);
+          return currentTime >= openMin && currentTime <= closeMin;
+        }
+      }
     }
-  }, [isActive]);
+    return true; // If no matching day, assume open
+  };
 
   // Shorten day names
   const shortenDay = (day) => {
@@ -169,6 +194,7 @@ const MarkerComponent = ({
   const normalIcon = new Icon({
     iconUrl,
     iconSize,
+    opacity: 1
   });
 
   return (
@@ -179,7 +205,7 @@ const MarkerComponent = ({
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
         className={isActive ? "marker-active" : ""}
-        // opacity={isActive ? 1 : 0.5}
+        opacity={isOpenNow() ? 1 : 0.6}
       >
         {/* <Popup>
           <div className="w-[300px] shadow-md rounded-xl p-2">
