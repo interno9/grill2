@@ -19,14 +19,14 @@ const MarkerComponent = ({
     if (!venue.schedule || venue.schedule.length === 0) return true; // Assume open if no schedule
 
     const now = new Date();
-    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
     const parseTime = (timeStr) => {
-      const [time, period] = timeStr.trim().split(' ');
-      let [hours, minutes] = time.split(':').map(Number);
-      if (period === 'PM' && hours !== 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
+      const [time, period] = timeStr.trim().split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
       return hours * 60 + (minutes || 0);
     };
 
@@ -34,8 +34,8 @@ const MarkerComponent = ({
       const match = entry.match(/^([^:]+):\s*(.+)$/);
       if (match && match[1] === currentDay) {
         const timeStr = match[2];
-        if (timeStr.toLowerCase().includes('closed')) return false;
-        const times = timeStr.split(' – ');
+        if (timeStr.toLowerCase().includes("closed")) return false;
+        const times = timeStr.split(" – ");
         if (times.length === 2) {
           const openMin = parseTime(times[0]);
           const closeMin = parseTime(times[1]);
@@ -194,7 +194,7 @@ const MarkerComponent = ({
   const normalIcon = new Icon({
     iconUrl,
     iconSize,
-    opacity: 1
+    opacity: 1,
   });
 
   return (
