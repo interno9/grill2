@@ -66,8 +66,6 @@ export function VenueSearch(props) {
           openingHours: data.openingHours || [],
           photoUrls: data.photoUrls || [],
           placeId: data.placeId,
-          instagram: data.instagram || "",
-          description: data.description || "",
         };
 
         onChange(set(venueData));
@@ -206,16 +204,6 @@ export function VenueSearch(props) {
                   </Box>
                 )}
 
-                {value.instagram && (
-                  <Box>
-                    <Text size={1} weight="semibold" muted>
-                      Instagram
-                    </Text>
-                    <Text size={2} style={{ marginTop: 4 }}>
-                      @{value.instagram}
-                    </Text>
-                  </Box>
-                )}
               </Grid>
 
               {value.website && (
@@ -235,17 +223,6 @@ export function VenueSearch(props) {
                     >
                       {value.website}
                     </a>
-                  </Text>
-                </Box>
-              )}
-
-              {value.description && (
-                <Box>
-                  <Text size={1} weight="semibold" muted>
-                    Description
-                  </Text>
-                  <Text size={2} style={{ marginTop: 4, lineHeight: 1.6 }}>
-                    {value.description}
                   </Text>
                 </Box>
               )}

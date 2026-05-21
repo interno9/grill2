@@ -2,7 +2,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useMap } from "react-leaflet";
 import MarkerComponent from "./MarkerComponent";
 import { Minus, Plus, X, SlidersHorizontal } from "lucide-react";
@@ -11,31 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-function ZoomControl() {
-  const map = useMap();
-
-  return (
-    <div className="absolute bottom-4 right-4 z-[1000] flex flex-col gap-2">
-      <button
-        onClick={() => {
-          map.zoomIn();
-        }}
-        className="bg-white font-bold w-6 h-6 rounded-full flex items-center justify-center"
-      >
-        <Plus size={16} />
-      </button>
-      <button
-        onClick={() => {
-          map.zoomOut();
-        }}
-        className="bg-white font-bold w-6 h-6 rounded-full flex items-center justify-center"
-      >
-        <Minus size={16} />
-      </button>
-    </div>
-  );
-}
 
 function InitialViewSetup({ startCoordinates, zoom }) {
   const map = useMap();
@@ -150,81 +125,18 @@ function MapClickHandler({ setOpenBar }) {
 
 const MapApp = ({
   venues,
-  allVenues,
-  cities,
   locationActive,
   setLocationActive,
   showBar,
-  setCategoryActive,
-  categoryActive,
   search,
   setSearch,
-  openNowFilter,
-  setOpenNowFilter,
   setOpenBar,
 }) => {
-  const zoom = 15;
-
-  // Convert cities from Sanity to positions object
-  const positions = useMemo(() => {
-    if (!cities || cities.length === 0) return {};
-
-    return cities.reduce((acc, city) => {
-      if (city.location?.lat && city.location?.lng && city.location?.address) {
-        // Use the address (city name) as the key, converted to lowercase
-        const cityName = city.location.address
-          .toLowerCase()
-          .split(",")[0]
-          .trim();
-        acc[cityName] = [city.location.lat, city.location.lng];
-      }
-      return acc;
-    }, {});
-  }, [cities]);
-
-  const [darkMode, setDarkMode] = useState(false);
-  const [noLabels, setNoLabels] = useState(false);
-  const [satelliteMode, setSatelliteMode] = useState(false);
-  const [startCoordinates, setStartCoordinates] = useState([
-    48.862818, 2.364706,
-  ]);
-
-  // Set initial coordinates to user's current position
-  /*
-  useEffect(() => {
-    if (startCoordinates) return; // Already set
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setStartCoordinates([
-          position.coords.latitude,
-          position.coords.longitude,
-        ]);
-      },
-      (error) => {
-        console.error("Error obtaining location:", error);
-        // Fallback to first city if geolocation fails
-        if (Object.keys(positions).length > 0) {
-          const firstCity = Object.values(positions)[0];
-          if (firstCity) {
-            setStartCoordinates(firstCity);
-          }
-        }
-      },
-      {
-        enableHighAccuracy: true,
-      }
-    );
-  }, [positions, startCoordinates]);
-  */
-
-  // Extract unique tags from all venues (not filtered)
-  const uniqueTags = useMemo(() => {
-    const venuesToUse = allVenues || venues;
-    const allTags = venuesToUse.flatMap((venue) => venue.tags || []);
-    const uniqueSet = new Set(allTags);
-    return Array.from(uniqueSet).sort();
-  }, [allVenues, venues]);
+  const zoom = 11;
+  const darkMode = false;
+  const noLabels = false;
+  const satelliteMode = false;
+  const startCoordinates = [46.0037, 8.9511];
 
   return (
     <div
@@ -250,68 +162,10 @@ const MapApp = ({
                 />
               </div>
 
-              <div>
-                <label className="text-xs font-semibold mb-1 block">Zone</label>
-                <select
-                  defaultValue=""
-                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  onChange={(e) => {
-                    setStartCoordinates(positions[e.target.value]);
-                  }}
-                >
-                  <option value="" disabled>
-                    Select zone
-                  </option>
-                  {Object.keys(positions).map((cityKey) => (
-                    <option key={cityKey} value={cityKey}>
-                      {cityKey.charAt(0).toUpperCase() + cityKey.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold mb-1 block">
-                  Category
-                </label>
-                <select
-                  value={categoryActive || ""}
-                  className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  onChange={(e) => {
-                    setCategoryActive(e.target.value);
-                  }}
-                >
-                  <option value="" disabled>
-                    Select category
-                  </option>
-                  <option value="all">All</option>
-                  {uniqueTags.map((tag) => (
-                    <option key={tag} value={tag} className="capitalize">
-                      {tag.charAt(0).toUpperCase() + tag.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => setOpenNowFilter(!openNowFilter)}
-                  className={`w-full px-3 py-2 text-sm rounded-lg transition-all font-semibold ${
-                    openNowFilter
-                      ? "bg-green-500 text-white hover:bg-green-600"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {openNowFilter ? "✓ Open now" : "Open now"}
-                </button>
-              </div>
-
-              {(search || categoryActive || openNowFilter) && (
+              {search && (
                 <button
                   onClick={() => {
                     setSearch("");
-                    setCategoryActive(null);
-                    setOpenNowFilter(false);
                   }}
                   className="w-full bg-red-500 text-white font-semibold px-3 py-2 text-sm rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -332,7 +186,7 @@ const MapApp = ({
         }}
         center={startCoordinates}
         zoom={zoom}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         doubleClickZoom={true}
         touchZoom={true}
         zoomControl={false}
@@ -342,7 +196,7 @@ const MapApp = ({
         <InitialViewSetup startCoordinates={startCoordinates} zoom={zoom} />
         <ResizeMap showBar={showBar} />
         <PanToActiveVenue venues={venues} locationActive={locationActive} />
-        <ZoomControl />
+
         <MapClickHandler setOpenBar={setOpenBar} />
 
         {!satelliteMode && (

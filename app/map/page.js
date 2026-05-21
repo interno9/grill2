@@ -2,20 +2,30 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
-import getSanityData from "../../sanity/lib/fetchSanity";
+import grillData from "../../grill.json";
 import Bar from "../components/Bar";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, CloudSun } from "lucide-react";
 
 export default function MapPage() {
   const [openBar, setOpenBar] = useState(false);
-  const [venues, setVenues] = useState([]);
-  const [cities, setCities] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const venues = useMemo(
+    () =>
+      grillData.map((item, index) => ({
+        _id: `grill-${index}`,
+        title: item.name,
+        imageUrls: item.img ? [item.img] : [],
+        location: {
+          lat: item.lat,
+          lng: item.lon,
+        },
+      })),
+    []
+  );
   const [locationActive, setLocationActive] = useState(null);
-  const [categoryActive, setCategoryActive] = useState(null);
   const [showBar, setShowBar] = useState(true);
   const [search, setSearch] = useState("");
   const [userLocation, setUserLocation] = useState(null);
-  const [openNowFilter, setOpenNowFilter] = useState(false);
 
   // Get user's current location
   useEffect(() => {
@@ -32,38 +42,6 @@ export default function MapPage() {
         }
       );
     }
-  }, []);
-
-  useEffect(() => {
-    const venueQuery = `*[_type == "venue"]{
-      _id,
-      "title": venueData.name,
-      "description": venueData.description,
-      "imageUrls": select(
-        count(customImages) > 0 => customImages[].asset->url,
-        venueData.photoUrls
-      ),
-      "location": venueData.location,
-      "schedule": venueData.openingHours,
-      "instagram": coalesce(instagramOverride, venueData.instagram),
-      "website": venueData.website,
-      "phone": venueData.phone,
-      "googleMap": venueData.googleMapsUrl,
-      tags
-    }`;
-
-    const cityQuery = `*[_type == "city"]{
-      _id,
-      location
-    }`;
-
-    getSanityData(venueQuery).then((res) => {
-      if (res) setVenues(res);
-    });
-
-    getSanityData(cityQuery).then((res) => {
-      if (res) setCities(res);
-    });
   }, []);
 
   const Map = useMemo(
@@ -99,9 +77,7 @@ export default function MapPage() {
 
   const fieldText = (v) => {
     const title = v.title || "";
-    const desc = v.description || "";
-    const tags = Array.isArray(v.tags) ? v.tags.join(" ") : "";
-    return normalize(`${title} ${tags} ${desc}`);
+    return normalize(title);
   };
 
   // Calculate distance between two coordinates using Haversine formula
@@ -119,52 +95,9 @@ export default function MapPage() {
     return R * c;
   };
 
-  // Check if venue is open now
-  const isVenueOpenNow = (venue) => {
-    if (!venue.schedule || venue.schedule.length === 0) return true;
-
-    const now = new Date();
-    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-
-    const todaySchedule = venue.schedule.find((entry) =>
-      entry.toLowerCase().startsWith(currentDay.toLowerCase())
-    );
-
-    if (!todaySchedule) return true;
-    if (todaySchedule.toLowerCase().includes("closed")) return false;
-
-    const timeMatch = todaySchedule.match(
-      /(\d{1,2}):(\d{2})\s*(AM|PM).*?(\d{1,2}):(\d{2})\s*(AM|PM)/i
-    );
-    if (!timeMatch) return true;
-
-    const [, startHour, startMin, startPeriod, endHour, endMin, endPeriod] =
-      timeMatch;
-
-    let openTime = parseInt(startHour) * 60 + parseInt(startMin);
-    let closeTime = parseInt(endHour) * 60 + parseInt(endMin);
-
-    if (startPeriod.toUpperCase() === "PM" && startHour !== "12")
-      openTime += 12 * 60;
-    if (startPeriod.toUpperCase() === "AM" && startHour === "12")
-      openTime = parseInt(startMin);
-    if (endPeriod.toUpperCase() === "PM" && endHour !== "12")
-      closeTime += 12 * 60;
-    if (endPeriod.toUpperCase() === "AM" && endHour === "12")
-      closeTime = parseInt(endMin);
-
-    return currentTime >= openTime && currentTime <= closeTime;
-  };
-
-  // Filter venues based on search and category
+  // Filter venues based on search
   const filteredVenues = useMemo(() => {
     let filtered = venues;
-
-    // Filter by category
-    if (categoryActive && categoryActive !== "all") {
-      filtered = filtered.filter((v) => v.tags?.includes(categoryActive));
-    }
 
     // Filter by search
     const q = search.trim();
@@ -174,11 +107,6 @@ export default function MapPage() {
         const text = fieldText(v);
         return patterns.every((re) => re.test(text));
       });
-    }
-
-    // Filter by open now
-    if (openNowFilter) {
-      filtered = filtered.filter((v) => isVenueOpenNow(v));
     }
 
     // Sort by distance from user location
@@ -205,7 +133,7 @@ export default function MapPage() {
     }
 
     return filtered;
-  }, [venues, search, categoryActive, userLocation, openNowFilter]);
+  }, [venues, search, userLocation]);
 
   // ID focus: trigger when exactly one venue matches search
   useEffect(() => {
@@ -226,29 +154,23 @@ export default function MapPage() {
     }
   }, [locationActive]);
 
-  // Handle wheel events anywhere on the page to scroll the bar instead (desktop only)
   useEffect(() => {
-    const handleWheel = (e) => {
-      // Only apply on screens >= sm (640px)
-      const isMobile = window.innerWidth < 640;
-      if (isMobile) return;
+    let isMounted = true;
 
-      // Find the bar's scroll container
-      const barContainer = document.querySelector(".overflow-y-scroll");
-
-      // Don't intercept if user is already scrolling within the bar itself
-      if (barContainer && !e.target.closest(".overflow-y-scroll")) {
-        e.preventDefault();
-        e.stopPropagation();
-        barContainer.scrollTop += e.deltaY;
-      }
-    };
-
-    // Add listener to the entire window/document
-    window.addEventListener("wheel", handleWheel, { passive: false });
+    fetch("/api/weather")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch weather");
+        return response.json();
+      })
+      .then((data) => {
+        if (isMounted) setWeather(data);
+      })
+      .catch((error) => {
+        console.error("Error getting Lugano weather:", error);
+      });
 
     return () => {
-      window.removeEventListener("wheel", handleWheel);
+      isMounted = false;
     };
   }, []);
 
@@ -264,19 +186,22 @@ export default function MapPage() {
 
         <Map
           venues={filteredVenues}
-          allVenues={venues}
-          cities={cities}
           locationActive={locationActive}
           setLocationActive={setLocationActive}
-          setCategoryActive={setCategoryActive}
-          categoryActive={categoryActive}
           showBar={showBar}
           search={search}
           setSearch={setSearch}
-          openNowFilter={openNowFilter}
-          setOpenNowFilter={setOpenNowFilter}
           setOpenBar={setOpenBar}
         />
+
+        <div className="fixed top-3 right-3 z-50 pointer-events-none">
+          <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-semibold text-black shadow-md">
+            <CloudSun size={17} strokeWidth={2} />
+            <span>
+              {weather ? `${weather.temperature}${weather.unit}` : "--°C"}
+            </span>
+          </div>
+        </div>
 
         {/* Sidebar / bottom bar */}
 
@@ -291,14 +216,13 @@ export default function MapPage() {
           </button>
 
           <div
+            onWheel={(event) => event.stopPropagation()}
             className={`outline sm:outline-none outline-white z-10 ${openBar ? "max-h-[20vh]" : "max-h-[80dvh]"} transition-all w-full bg-white sm:bg-transparent gap-4 sm:p-4 flex flex-col sm:max-h-[100dvh] overflow-x-scroll items-center overflow-y-scroll pointer-events-auto`}
           >
             <Bar
               venues={filteredVenues}
               locationActive={locationActive}
               setLocationActive={setLocationActive}
-              setCategoryActive={setCategoryActive}
-              categoryActive={categoryActive}
               search={search}
               setSearch={setSearch}
             />

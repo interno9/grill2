@@ -1,0 +1,497 @@
+[
+  {
+    "name": "Brè Recreation",
+    "lat": 46.010944,
+    "lon": 8.983318
+  },
+  {
+    "name": "Al Boschetto Playground",
+    "lat": 46.409944,
+    "lon": 8.981644
+  },
+  {
+    "name": "Meriggio Playground",
+    "lat": 46.177996,
+    "lon": 8.759775
+  },
+  {
+    "name": "Cardada",
+    "lat": 46.186523,
+    "lon": 8.789021
+  },
+  {
+    "name": "Bagni di Craveggia Picnic",
+    "lat": 46.15082,
+    "lon": 8.57376
+  },
+  {
+    "name": "Mulino del Daniello ",
+    "lat": 45.847661,
+    "lon": 8.981707
+  },
+  {
+    "name": "Valle della Motta ",
+    "lat": 45.845806,
+    "lon": 8.994972
+  },
+  {
+    "name": "Parco delle Gole della Breggia ",
+    "lat": 45.851809,
+    "lon": 9.025447
+  },
+  {
+    "name": "Praossign ",
+    "lat": 46.254771,
+    "lon": 8.706239
+  },
+  {
+    "name": "Piccolo Paradiso ",
+    "lat": 46.200546,
+    "lon": 8.74308
+  },
+  {
+    "name": "Origlio ",
+    "lat": 46.046611,
+    "lon": 8.943941
+  },
+  {
+    "name": "Bosco Luganese ",
+    "lat": 46.026388,
+    "lon": 8.908889
+  },
+  {
+    "name": "Lamone San Zenone Picnic Table",
+    "lat": 46.040306,
+    "lon": 8.932639
+  },
+  {
+    "name": "Bellinzona Daro ",
+    "lat": 46.194621,
+    "lon": 9.022121
+  },
+  {
+    "name": "Piumogna Waterfall ",
+    "lat": 46.477832,
+    "lon": 8.799968
+  },
+  {
+    "name": "Tenero Lakeside",
+    "lat": 46.176482,
+    "lon": 8.857664
+  },
+  {
+    "name": "Maggia Riverside ",
+    "lat": 46.204184,
+    "lon": 8.703527
+  },
+  {
+    "name": "Airolo ",
+    "lat": 46.528468,
+    "lon": 8.611204
+  },
+  {
+    "name": "Castione Picnic",
+    "lat": 46.232982,
+    "lon": 9.024726
+  },
+  {
+    "name": "Ronco sopra Ascona ",
+    "lat": 46.142982,
+    "lon": 8.726375
+  },
+  {
+    "name": "Lido di Melide",
+    "lat": 45.9928,
+    "lon": 8.9942
+  },
+  {
+    "name": "Gandria Lakefront",
+    "lat": 46.0128,
+    "lon": 8.9682
+  },
+  {
+    "name": "Verzasca River",
+    "lat": 46.27,
+    "lon": 8.819
+  },
+  {
+    "name": "Mendrisio Park",
+    "lat": 45.877,
+    "lon": 8.9731
+  },
+  {
+    "name": "Parco San Michele ",
+    "lat": 46.009715,
+    "lon": 8.970384
+  },
+  {
+    "name": "Monte Brè Picnic",
+    "lat": 46.012223,
+    "lon": 8.984931
+  },
+  {
+    "name": "Sabbione Transhumance Trail Picnic Table",
+    "lat": 46.32595,
+    "lon": 8.60398
+  },
+  {
+    "name": "Colle San Marco ",
+    "lat": 46.152406,
+    "lon": 8.739588
+  },
+  {
+    "name": "Magliasina Molino ",
+    "lat": 46.04091,
+    "lon": 8.84652
+  },
+  {
+    "name": "Linee Arzo Recreation Area",
+    "lat": 45.876903,
+    "lon": 8.941653
+  },
+  {
+    "name": "Bellavista ",
+    "lat": 45.870574,
+    "lon": 8.987541
+  },
+  {
+    "name": "Canavee ",
+    "lat": 45.872731,
+    "lon": 8.983942
+  },
+  {
+    "name": "Biasca Picnic",
+    "lat": 46.359877,
+    "lon": 8.969178
+  },
+  {
+    "name": "Lengtanne Fanas",
+    "lat": 46.990149,
+    "lon": 9.654483
+  },
+  {
+    "name": "Tuss Küblis",
+    "lat": 46.912854,
+    "lon": 9.771014
+  },
+  {
+    "name": "Au Grüsch",
+    "lat": 46.97199,
+    "lon": 9.644699
+  },
+  {
+    "name": "Jenazer Bad Jenaz",
+    "lat": 46.920579,
+    "lon": 9.68639
+  },
+  {
+    "name": "Partnunsee St. Antönien",
+    "lat": 47.007839,
+    "lon": 9.85908
+  },
+  {
+    "name": "Auf den Böden",
+    "lat": 46.912111,
+    "lon": 9.757812
+  },
+  {
+    "name": "Badesee Brigels",
+    "lat": 46.769994,
+    "lon": 9.068231
+  },
+  {
+    "name": "Altdorf Moosbad",
+    "lat": 46.892278,
+    "lon": 8.630444
+  },
+  {
+    "name": "Altdorf Wasserreservoir",
+    "lat": 46.886722,
+    "lon": 8.642278
+  },
+  {
+    "name": "Bürglen Biel-Kinzig",
+    "lat": 46.90175,
+    "lon": 8.71475
+  },
+  {
+    "name": "Isenthal Gitschenen",
+    "lat": 46.898052,
+    "lon": 8.48709
+  },
+  {
+    "name": "Schattdorf Figstuhl",
+    "lat": 46.852194,
+    "lon": 8.672639
+  },
+  {
+    "name": "Seedorf Aussichtspunkt Kreuz",
+    "lat": 46.881778,
+    "lon": 8.603389
+  },
+  {
+    "name": "Marienhöhe Seelisberg",
+    "lat": 46.962658,
+    "lon": 8.588817
+  },
+  {
+    "name": "Beendel Chüestelli Schöftland",
+    "lat": 47.304014,
+    "lon": 8.068093
+  },
+  {
+    "name": "Blick zur Heimat Schöftland",
+    "lat": 47.307711,
+    "lon": 8.058139
+  },
+  {
+    "name": "Sonnenbergturm",
+    "lat": 47.532726,
+    "lon": 7.84667
+  },
+  {
+    "name": "Peuk's Grillstand",
+    "lat": 47.481321,
+    "lon": 8.109533
+  },
+  {
+    "name": "Biberstein Fuchsholz",
+    "lat": 47.426144,
+    "lon": 8.074184
+  },
+  {
+    "name": "Ibergflue",
+    "lat": 47.463308,
+    "lon": 8.112603
+  },
+  {
+    "name": "Wegenstetter Flue",
+    "lat": 47.486039,
+    "lon": 7.937451
+  },
+  {
+    "name": "Gipf-Oberfrick",
+    "lat": 47.484932,
+    "lon": 8.011136
+  },
+  {
+    "name": "Wissenegg Finsterwald",
+    "lat": 46.971995,
+    "lon": 8.126525
+  },
+  {
+    "name": "Dorfleuteried Buochs",
+    "lat": 46.974737,
+    "lon": 8.422528
+  },
+  {
+    "name": "Stollen Klewenalp",
+    "lat": 46.938964,
+    "lon": 8.488623
+  },
+  {
+    "name": "Freienbach am See",
+    "lat": 47.206354,
+    "lon": 8.763167
+  },
+  {
+    "name": "Robi-Anlage Wilen-Wollerau",
+    "lat": 47.198038,
+    "lon": 8.735156
+  },
+  {
+    "name": "Leisee Zermatt",
+    "lat": 46.01557,
+    "lon": 7.772693
+  },
+  {
+    "name": "Drachenplatz Beatenberg",
+    "lat": 46.704594,
+    "lon": 7.800252
+  },
+  {
+    "name": "Schafgade Beatenberg",
+    "lat": 46.690814,
+    "lon": 7.771339
+  },
+  {
+    "name": "Rischere Beatenberg",
+    "lat": 46.711369,
+    "lon": 7.813189
+  },
+  {
+    "name": "Guntelsey",
+    "lat": 46.725035,
+    "lon": 7.599878
+  },
+  {
+    "name": "Uf Stocke Krattigen",
+    "lat": 46.657304,
+    "lon": 7.727288
+  },
+  {
+    "name": "Entenstein Ringgenberg",
+    "lat": 46.711796,
+    "lon": 7.920327
+  },
+  {
+    "name": "Hofstetten bei Brienz",
+    "lat": 46.755251,
+    "lon": 8.071862
+  },
+  {
+    "name": "Scrausch Trin",
+    "lat": 46.825067,
+    "lon": 9.348011
+  },
+  {
+    "name": "Comb Grede Villeret",
+    "lat": 47.153963,
+    "lon": 7.022567
+  },
+  {
+    "name": "Stockbrünneli Wangen bei Olten",
+    "lat": 47.355361,
+    "lon": 7.855988
+  },
+  {
+    "name": "Waldzimmer Biberist",
+    "lat": 47.190825,
+    "lon": 7.520708
+  },
+  {
+    "name": "Neuböden Guggisberg",
+    "lat": 46.740196,
+    "lon": 7.325745
+  },
+  {
+    "name": "Badeplatz Kesswil",
+    "lat": 47.598969,
+    "lon": 9.315501
+  },
+  {
+    "name": "Königs-Wuhr Frauenfeld",
+    "lat": 47.541878,
+    "lon": 8.902547
+  },
+  {
+    "name": "Tätsch Weinfelden",
+    "lat": 47.566358,
+    "lon": 9.106183
+  },
+  {
+    "name": "Hundwiler Höhe",
+    "lat": 47.342115,
+    "lon": 9.33634
+  },
+  {
+    "name": "Lillyweg Urnäsch",
+    "lat": 47.273068,
+    "lon": 9.290027
+  },
+  {
+    "name": "Stelliwald Schwammhöhe",
+    "lat": 47.036414,
+    "lon": 9.020988
+  },
+  {
+    "name": "Sattelboden Mollis",
+    "lat": 47.097431,
+    "lon": 9.103196
+  },
+  {
+    "name": "Bergli Glarus",
+    "lat": 47.043422,
+    "lon": 9.055724
+  },
+  {
+    "name": "Hinterschlatt Netstal",
+    "lat": 47.069115,
+    "lon": 9.064806
+  },
+  {
+    "name": "Vorderschlatt Netstal",
+    "lat": 47.068551,
+    "lon": 9.063556
+  },
+  {
+    "name": "Dorf Musiktruhe Braunwald",
+    "lat": 46.938899,
+    "lon": 8.99871
+  },
+  {
+    "name": "Brunnenstübli Glarus",
+    "lat": 47.037133,
+    "lon": 9.045181
+  },
+  {
+    "name": "Brunner 1 Mollis",
+    "lat": 47.079343,
+    "lon": 9.099169
+  },
+  {
+    "name": "Wyden Glarus",
+    "lat": 47.039268,
+    "lon": 9.044993
+  },
+  {
+    "name": "Stümmlen Bilten",
+    "lat": 47.148633,
+    "lon": 9.011514
+  },
+  {
+    "name": "Gold Trophy Eschenbach",
+    "lat": 47.251228,
+    "lon": 8.959093
+  },
+  {
+    "name": "Ermenswil Playground",
+    "lat": 47.243981,
+    "lon": 8.8875
+  },
+  {
+    "name": "Oberdorf Wildhaus",
+    "lat": 47.19119,
+    "lon": 9.34697
+  },
+  {
+    "name": "Chänzeli Lichtensteig",
+    "lat": 47.32838,
+    "lon": 9.09524
+  },
+  {
+    "name": "Gerstenboden Klangweg",
+    "lat": 47.17963,
+    "lon": 9.30743
+  },
+  {
+    "name": "Altbach Kirchberg",
+    "lat": 47.41499,
+    "lon": 9.03537
+  },
+  {
+    "name": "Letten Giessenfall Kirchberg",
+    "lat": 47.42503,
+    "lon": 9.02709
+  },
+  {
+    "name": "Schären Sellamatt",
+    "lat": 47.18013,
+    "lon": 9.28597
+  },
+  {
+    "name": "Brandholzbrücke Ebnat-Kappel",
+    "lat": 47.25634,
+    "lon": 9.14245
+  },
+  {
+    "name": "Steinwald Gamplüt",
+    "lat": 47.21393,
+    "lon": 9.32631
+  },
+  {
+    "name": "Inseli Stein",
+    "lat": 47.20348,
+    "lon": 9.21891
+  }
+]

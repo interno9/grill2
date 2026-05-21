@@ -1,82 +1,14 @@
-import { useEffect, useState } from "react";
-import Swiper from "swiper";
+import { useEffect } from "react";
 import Swiperino from "./Swiperino";
-import {
-  Globe,
-  Instagram,
-  InstagramIcon,
-  Phone,
-  ChevronDown,
-  ChevronUp,
-  ArrowRight,
-  Dot,
-} from "lucide-react";
 
 export default function Bar({ venues, setLocationActive, locationActive }) {
-  const [hoursExpanded, setHoursExpanded] = useState({});
-
-  // Check if venue is open now
-  const isOpenNow = (venue) => {
-    if (!venue.schedule || venue.schedule.length === 0) return false;
-
-    const now = new Date();
-    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-
-    const parseTime = (timeStr) => {
-      const [time, period] = timeStr.trim().split(" ");
-      let [hours, minutes] = time.split(":").map(Number);
-      if (period === "PM" && hours !== 12) hours += 12;
-      if (period === "AM" && hours === 12) hours = 0;
-      return hours * 60 + (minutes || 0);
-    };
-
-    for (const entry of venue.schedule) {
-      const match = entry.match(/^([^:]+):\s*(.+)$/);
-      if (match && match[1] === currentDay) {
-        const timeStr = match[2];
-        if (timeStr.toLowerCase().includes("closed")) return false;
-        const times = timeStr.split(" – ");
-        if (times.length === 2) {
-          const openMin = parseTime(times[0]);
-          const closeMin = parseTime(times[1]);
-          return currentTime >= openMin && currentTime <= closeMin;
-        }
-      }
-    }
-    return false;
-  };
-  const dayMap = {
-    monday: "Mo",
-    tuesday: "Tu",
-    wednesday: "We",
-    thursday: "Th",
-    friday: "Fr",
-    saturday: "Sa",
-    sunday: "Su",
-  };
-
-  const dayOrder = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
-  ];
-
-  const compactHours = (hours) => {
-    // Return hours as is, assuming Google API provides all days
-    return hours || [];
-  };
   useEffect(() => {
     if (locationActive != null) {
       const el = document.getElementById(`${locationActive}`);
       if (el) {
         // Check if it's the last venue
         const venueIndex = venues.findIndex(
-          (v) => (v._id || venues.indexOf(v)) === locationActive
+          (v) => (v._id || venues.indexOf(v)) === locationActive,
         );
         const isLastVenue = venueIndex === venues.length - 1;
 
@@ -113,22 +45,6 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
 
   return venues.map((venue, index) => {
     const venueId = venue._id ?? index;
-
-    const radomColor = () => {
-      const colors = [
-        "bg-[#d3235b]",
-        "bg-[#241757]",
-        "bg-[#e6b66a]",
-        "bg-[#98b6aa]",
-        "bg-[#aa2226]",
-        "bg-[#a4f96c]",
-        "bg-[#ff7e20]",
-        "bg-[#85b7df]",
-      ];
-      return null;
-      return colors[Math.floor(Math.random() * colors.length)];
-    };
-
     const isActive = locationActive === venueId;
 
     return (
@@ -136,123 +52,23 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
-        className={`sm:pb-0 w-full sm:shadow-md ${radomColor()} bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group 
-          ${isActive ? `${radomColor()}` : ""}`}
+        className="sm:pb-0 w-full sm:shadow-md bg-white text-black flex-shrink-0 w-44 sm:w-full transition-all text-left duration-200 group"
       >
         <div
           className={`p-4 overflow-hidden transition-all duration-200
             ${isActive ? "sm:bg-[#c1282e] sm:text-white" : ""}
           `}
         >
-          <div className="relative border border-neutral-100">
+          <div className="relative">
             <Swiperino
-              imgs={venue.imageUrls}
+              imgs={[`/assets/grill/img${(index + 1) % 8}.png`]}
               slidesPerView={1}
               pagination={{ clickable: true }}
             />
-
-            <div className="absolute z-50 top-2 right-2 flex gap-1 text-[10px]">
-              {venue.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className={`font-bold px-2 outline bg-[#c1282e] text-white outline-[0] rounded-full capitalize`}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
           </div>
-          <h1 className="my-2 tracking-tight text-4xl sm:text-5xl font-semibold">
+          <h1 className="mt-4 tracking-tight text-2xl sm:text-3xl font-semibold">
             {venue.title}
           </h1>
-
-          <div className="">
-            <hr />
-            <p className="mt-2 text-xs leading-4 tracking-tight">
-              {venue.description ||
-                "A cozy Parisian restaurant with a great atmosphere and delicious food. The perfect spot for a romantic dinner or a night out with friends. Come and experience the charm of Paris right here!"}
-            </p>
-
-            {venue.schedule && venue.schedule.length > 0 && (
-              <div className="mt-4 font-bold ">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setHoursExpanded((prev) => ({
-                      ...prev,
-                      [venueId]: !prev[venueId],
-                    }));
-                  }}
-                  className={`flex items-center gap-1 text-xs mb-1 hover:text-gray-600 ${isOpenNow(venue) ? "blink" : ""}`}
-                >
-                  Opening Hours
-                  {hoursExpanded[venueId] ? (
-                    <ChevronUp size={12} />
-                  ) : (
-                    <ChevronDown size={12} />
-                  )}
-                </button>
-                {hoursExpanded[venueId] && (
-                  <div className="text-xs">
-                    {compactHours(venue.schedule).map((hour, index) => {
-                      const [day, time] = hour.split(": ");
-                      const currentDay = new Date().toLocaleDateString(
-                        "en-US",
-                        { weekday: "long" }
-                      );
-                      return (
-                        <div key={index} className="flex items-center">
-                          <span className={"flex gap-2 items-center"}>
-                            {day === currentDay && (
-                              <Dot size={14} className="animate-pulse" />
-                            )}
-                            {day}
-                          </span>
-                          <div
-                            className="flex-1 mx-2"
-                            style={{ borderBottom: "1px dotted #dedede" }}
-                          ></div>
-                          <span>{time}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="mt-4 flex items-center gap-4 text-xs">
-              {venue.instagram && (
-                <a
-                  href={"https://www.instagram.com/" + venue.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <InstagramIcon size={18} strokeWidth={2} />
-                </a>
-              )}
-
-              {venue.website && (
-                <a
-                  href={venue.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Globe size={18} strokeWidth={2} />
-                </a>
-              )}
-
-              {venue.phone && (
-                <a
-                  href={`tel:${venue.phone}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Phone size={18} strokeWidth={2} />
-                </a>
-              )}
-            </div>
-          </div>
         </div>
       </button>
     );

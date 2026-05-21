@@ -1,5 +1,4 @@
 import { VenueSearch } from "@/sanity/components/VenueSearch";
-import { TagSuggestions } from "@/sanity/components/TagSuggestions";
 
 export default {
   name: "venue",
@@ -45,24 +44,7 @@ export default {
           title: "Photo URLs",
         },
         { name: "placeId", type: "string", title: "Google Place ID" },
-        { name: "instagram", type: "string", title: "Instagram" },
-        { name: "description", type: "text", title: "Description" },
       ],
-    },
-    {
-      name: "instagramOverride",
-      title: "Instagram Handle",
-      description: 'Instagram username (without "@")',
-      type: "string",
-      validation: (Rule) =>
-        Rule.custom((value) => {
-          if (!value) return true;
-          // Check if it's a valid Instagram username format
-          if (!/^[a-zA-Z0-9._]{1,30}$/.test(value)) {
-            return "Please enter a valid Instagram username (no @ symbol, letters, numbers, dots and underscores only)";
-          }
-          return true;
-        }),
     },
     {
       name: "customImages",
@@ -71,15 +53,6 @@ export default {
       of: [{ type: "image" }],
       options: {
         layout: "grid",
-      },
-    },
-    {
-      name: "tags",
-      title: "Category Tags",
-      type: "array",
-      of: [{ type: "string" }],
-      components: {
-        input: TagSuggestions,
       },
     },
   ],

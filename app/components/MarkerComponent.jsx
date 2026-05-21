@@ -1,8 +1,6 @@
 import { Marker, Popup } from "react-leaflet";
-import { useEffect, useRef, useState } from "react"; // Added useState import
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "leaflet";
-import Swiperino from "./Swiperino";
-import { Globe, Instagram, Phone, GlobeIcon, Map } from "lucide-react";
 
 const MarkerComponent = ({
   id,
@@ -13,140 +11,6 @@ const MarkerComponent = ({
 }) => {
   const markerRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
-
-  // Get current time and check if venue is open
-  const isOpenNow = () => {
-    if (!venue.schedule || venue.schedule.length === 0) return true; // Assume open if no schedule
-
-    const now = new Date();
-    const currentDay = now.toLocaleDateString("en-US", { weekday: "long" });
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-
-    const parseTime = (timeStr) => {
-      const [time, period] = timeStr.trim().split(" ");
-      let [hours, minutes] = time.split(":").map(Number);
-      if (period === "PM" && hours !== 12) hours += 12;
-      if (period === "AM" && hours === 12) hours = 0;
-      return hours * 60 + (minutes || 0);
-    };
-
-    for (const entry of venue.schedule) {
-      const match = entry.match(/^([^:]+):\s*(.+)$/);
-      if (match && match[1] === currentDay) {
-        const timeStr = match[2];
-        if (timeStr.toLowerCase().includes("closed")) return false;
-        const times = timeStr.split(" – ");
-        if (times.length === 2) {
-          const openMin = parseTime(times[0]);
-          const closeMin = parseTime(times[1]);
-          return currentTime >= openMin && currentTime <= closeMin;
-        }
-      }
-    }
-    return true; // If no matching day, assume open
-  };
-
-  // Shorten day names
-  const shortenDay = (day) => {
-    const dayMap = {
-      Monday: "Mon",
-      Tuesday: "Tue",
-      Wednesday: "Wed",
-      Thursday: "Thu",
-      Friday: "Fri",
-      Saturday: "Sat",
-      Sunday: "Sun",
-    };
-    return dayMap[day] || day;
-  };
-
-  // Group consecutive days with same hours into ranges
-  const groupSchedule = (schedule) => {
-    if (!schedule || schedule.length === 0) return [];
-
-    // Separate closed and open days
-    const openDays = [];
-    const closedDays = [];
-
-    schedule.forEach((entry) => {
-      const match = entry.match(/^([^:]+):\s*(.+)$/);
-      if (!match) {
-        openDays.push({ original: entry });
-        return;
-      }
-
-      const [, day, hours] = match;
-      if (hours.toLowerCase().includes("closed")) {
-        closedDays.push({ day, hours });
-      } else {
-        openDays.push({ day, hours });
-      }
-    });
-
-    // Group open days
-    const grouped = [];
-    let currentGroup = null;
-
-    openDays.forEach((item, index) => {
-      if (item.original) {
-        grouped.push(item.original);
-        return;
-      }
-
-      if (!currentGroup) {
-        currentGroup = {
-          startDay: item.day,
-          endDay: item.day,
-          hours: item.hours,
-        };
-      } else if (currentGroup.hours === item.hours) {
-        currentGroup.endDay = item.day;
-      } else {
-        if (currentGroup.startDay === currentGroup.endDay) {
-          grouped.push(
-            `${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`
-          );
-        } else {
-          grouped.push(
-            `${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`
-          );
-        }
-        currentGroup = {
-          startDay: item.day,
-          endDay: item.day,
-          hours: item.hours,
-        };
-      }
-
-      if (index === openDays.length - 1 && currentGroup) {
-        if (currentGroup.startDay === currentGroup.endDay) {
-          grouped.push(
-            `${shortenDay(currentGroup.startDay)}: ${currentGroup.hours}`
-          );
-        } else {
-          grouped.push(
-            `${shortenDay(currentGroup.startDay)} – ${shortenDay(currentGroup.endDay)}: ${currentGroup.hours}`
-          );
-        }
-      }
-    });
-
-    // Group closed days
-    if (closedDays.length > 0) {
-      if (closedDays.length === 1) {
-        grouped.push(
-          `${shortenDay(closedDays[0].day)}: ${closedDays[0].hours}`
-        );
-      } else {
-        const closedDayNames = closedDays
-          .map((d) => shortenDay(d.day))
-          .join(", ");
-        grouped.push(`${closedDayNames}: ${closedDays[0].hours}`);
-      }
-    }
-
-    return grouped;
-  };
 
   // Get user location
   useEffect(() => {
@@ -186,11 +50,6 @@ const MarkerComponent = ({
 
   const iconSize = isActive ? [40, 40] : [30, 30];
 
-  const activeIcon = new Icon({
-    iconUrl: "/assets/icons/positionIconActive.svg",
-    iconSize,
-  });
-
   const normalIcon = new Icon({
     iconUrl,
     iconSize,
@@ -205,93 +64,7 @@ const MarkerComponent = ({
         ref={markerRef}
         eventHandlers={{ click: handleClick }}
         className={isActive ? "marker-active" : ""}
-        opacity={isOpenNow() ? 1 : 0.6}
-      >
-        {/* <Popup>
-          <div className="w-[300px] shadow-md rounded-xl p-2">
-            <h1 className="font-bold tracking-tight text-center mb-2">
-              {venue.title}
-            </h1>
-            <Swiperino imgs={venue.imageUrls || []} videos={[]} />
-
-            {venue.description && (
-              <div className="text-xs pt-4 font-bold tracking-tight leading-3">
-                {venue.description}
-              </div>
-            )}
-            <div className="flex gap-2 justify-evenly py-2">
-              {venue.phone && (
-                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
-                  <a
-                    style={{
-                      color: "white",
-                    }}
-                    href={`tel:${venue.phone}`}
-                    target="_blank"
-                  >
-                    <Phone size={14} />
-                  </a>
-                </button>
-              )}
-
-              <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
-                <a
-                  style={{
-                    color: "white",
-                  }}
-                  href={venue.googleMap}
-                  target="_blank"
-                >
-                  <Map size={14} />
-                </a>
-              </button>
-
-              {venue.instagram && (
-                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
-                  <a
-                    style={{
-                      color: "white",
-                    }}
-                    href={`https://www.instagram.com/${venue.instagram}/`}
-                    target="_blank"
-                  >
-                    <Instagram size={14} />
-                  </a>
-                </button>
-              )}
-
-              {venue.website && (
-                <button className="bg-[#c52627] text-white p-2 rounded-full hover:opacity-50 transition-all">
-                  <a
-                    style={{
-                      color: "white",
-                    }}
-                    href={venue.website}
-                    target="_blank"
-                  >
-                    <GlobeIcon size={14} />
-                  </a>
-                </button>
-              )}
-
-              
-            </div>
-
-            {venue.schedule && venue.schedule.length > 0 && (
-              <div className="border-t border-gray-200 mt-4 pt-4">
-                <h2 className="font-bold text-xs mb-2">Opening Hours</h2>
-                <div className="space-y-1">
-                  {groupSchedule(venue.schedule).map((hour, index) => (
-                    <div key={index} className="text-xs text-gray-700">
-                      {hour}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </Popup> */}
-      </Marker>
+      />
 
       {/* User Location Marker */}
       {userLocation && (

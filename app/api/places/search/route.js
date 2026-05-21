@@ -9,54 +9,6 @@ const GOOGLE_PLACES_PHOTO_URL =
   "https://maps.googleapis.com/maps/api/place/photo";
 const MAX_PHOTOS = 5;
 const PHOTO_MAX_WIDTH = 800;
-const INSTAGRAM_REGEX = /instagram\.com\/([a-zA-Z0-9._]+)/;
-
-// Helper functions
-const extractInstagramHandle = (text) => {
-  if (!text) return "";
-
-  console.log("Checking for Instagram in:", text);
-
-  // Match Instagram URLs and handles in various formats
-  const patterns = [
-    /(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z0-9._]+)/gi,
-    /(?:https?:\/\/)?(?:www\.)?instagr\.am\/([a-zA-Z0-9._]+)/gi,
-    /instagram\.com\\?\/([a-zA-Z0-9._]+)/gi, // Escaped slashes
-  ];
-
-  for (const pattern of patterns) {
-    const matches = [...text.matchAll(pattern)];
-    for (const match of matches) {
-      if (match[1]) {
-        // Clean up the handle
-        let handle = match[1]
-          .replace(/\/$/, "") // Remove trailing slash
-          .replace(/\?.*$/, "") // Remove query params
-          .replace(/\\/g, ""); // Remove escaped characters
-
-        // Filter out common false positives
-        const blacklist = [
-          "explore",
-          "accounts",
-          "p",
-          "stories",
-          "reel",
-          "reels",
-          "tv",
-          "about",
-          "direct",
-        ];
-        if (!blacklist.includes(handle.toLowerCase())) {
-          console.log("Found Instagram handle:", handle);
-          return handle;
-        }
-      }
-    }
-  }
-
-  console.log("No Instagram handle found");
-  return "";
-};
 
 const buildPhotoUrls = (photos, apiKey) => {
   if (!photos || photos.length === 0) return [];
@@ -87,10 +39,8 @@ const getPlaceDetails = async (placeId, apiKey) => {
     "opening_hours",
     "types",
     "url",
-    "editorial_summary",
     "international_phone_number",
     "business_status",
-    "reviews", // Reviews sometimes contain social media mentions
   ].join(",");
 
   const response = await fetch(
@@ -107,47 +57,8 @@ const buildVenueData = (details, placeId, photoUrls) => {
   console.log("Building venue data from:", {
     name: details.name,
     website: details.website,
-    hasEditorialSummary: !!details.editorial_summary?.overview,
     url: details.url,
-    hasReviews: !!details.reviews,
   });
-
-  // Try to find Instagram from multiple sources
-  let instagram = "";
-
-  // 1. Check website
-  if (details.website) {
-    console.log("Checking website:", details.website);
-    instagram = extractInstagramHandle(details.website);
-  }
-
-  // 2. Check editorial summary/description
-  if (!instagram && details.editorial_summary?.overview) {
-    console.log(
-      "Checking editorial summary:",
-      details.editorial_summary.overview
-    );
-    instagram = extractInstagramHandle(details.editorial_summary.overview);
-  }
-
-  // 3. Check reviews for Instagram mentions
-  if (!instagram && details.reviews) {
-    console.log("Checking reviews for Instagram mentions");
-    for (const review of details.reviews) {
-      if (review.text) {
-        instagram = extractInstagramHandle(review.text);
-        if (instagram) break;
-      }
-    }
-  }
-
-  // 4. Check Google Maps URL (sometimes contains social media)
-  if (!instagram && details.url) {
-    console.log("Checking Google Maps URL:", details.url);
-    instagram = extractInstagramHandle(details.url);
-  }
-
-  console.log("Final Instagram handle:", instagram || "NOT FOUND");
 
   return {
     name: details.name || "",
@@ -160,8 +71,6 @@ const buildVenueData = (details, placeId, photoUrls) => {
     openingHours: details.opening_hours?.weekday_text || [],
     photoUrls,
     placeId,
-    instagram,
-    description: details.editorial_summary?.overview || "",
   };
 };
 
@@ -210,37 +119,6 @@ export async function POST(request) {
     // Step 3: Build venue data
     const photoUrls = buildPhotoUrls(detailsData.result.photos, apiKey);
     const venueData = buildVenueData(detailsData.result, placeId, photoUrls);
-
-    // Step 4: If Instagram not found, try scraping from Google Maps page
-    if (!venueData.instagram && detailsData.result.url) {
-      try {
-        console.log("Attempting to scrape Instagram from Google Maps...");
-        const socialResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/places/social`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              googleMapsUrl: detailsData.result.url,
-              placeName: detailsData.result.name,
-            }),
-          }
-        );
-
-        if (socialResponse.ok) {
-          const socialData = await socialResponse.json();
-          if (socialData.instagram) {
-            venueData.instagram = socialData.instagram;
-            console.log("Instagram found via scraping:", socialData.instagram);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching social media:", error);
-        // Continue without Instagram - not a critical error
-      }
-    }
 
     return NextResponse.json(venueData);
   } catch (error) {
