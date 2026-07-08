@@ -1,7 +1,71 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swiperino from "./Swiperino";
 
+const PAGE_SIZE = 15;
+const LOAD_AHEAD_OFFSET = 3;
+
 export default function Bar({ venues, setLocationActive, locationActive }) {
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loadMoreTriggerRef = useRef(null);
+
+  const visibleVenues = useMemo(
+    () => venues.slice(0, visibleCount),
+    [venues, visibleCount],
+  );
+  const triggerIndex = Math.max(0, visibleVenues.length - 1 - LOAD_AHEAD_OFFSET);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [venues]);
+
+  useEffect(() => {
+    if (locationActive == null) return;
+
+    const activeIndex = venues.findIndex(
+      (v, index) => (v._id || index) === locationActive,
+    );
+
+    if (activeIndex >= visibleCount) {
+      setVisibleCount(
+        Math.min(
+          venues.length,
+          Math.ceil((activeIndex + 1) / PAGE_SIZE) * PAGE_SIZE,
+        ),
+      );
+    }
+  }, [locationActive, venues, visibleCount]);
+
+  useEffect(() => {
+    const triggerEl = loadMoreTriggerRef.current;
+    if (!triggerEl || visibleCount >= venues.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setVisibleCount((count) => Math.min(count + PAGE_SIZE, venues.length));
+      return;
+    }
+
+    const scrollContainer =
+      triggerEl.closest(".overflow-y-scroll") ||
+      triggerEl.closest(".overflow-x-scroll");
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((count) => Math.min(count + PAGE_SIZE, venues.length));
+        }
+      },
+      {
+        root: scrollContainer,
+        rootMargin: "160px",
+        threshold: 0.1,
+      },
+    );
+
+    observer.observe(triggerEl);
+
+    return () => observer.disconnect();
+  }, [venues.length, visibleCount, triggerIndex]);
+
   useEffect(() => {
     if (locationActive != null) {
       const el = document.getElementById(`${locationActive}`);
@@ -41,14 +105,15 @@ export default function Bar({ venues, setLocationActive, locationActive }) {
         }
       }
     }
-  }, [locationActive, venues]);
+  }, [locationActive, venues, visibleCount]);
 
-  return venues.map((venue, index) => {
+  return visibleVenues.map((venue, index) => {
     const venueId = venue._id ?? index;
     const isActive = locationActive === venueId;
 
     return (
       <button
+        ref={index === triggerIndex ? loadMoreTriggerRef : null}
         id={`${venueId}`}
         key={venueId}
         onClick={() => setLocationActive(venueId)}
